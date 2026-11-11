@@ -1,0 +1,31 @@
+// =============================================================================
+//  THE LAST REMNANT · Kelompok 7 · Root build
+//  Bagian : Integrasi & testing (setup repo W1)
+// =============================================================================
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    version = projectVersion
+    ext.appName = 'TheLastRemnant'
+}
+
+configure(subprojects) {
+    apply plugin: 'java-library'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.compilerArgs += ['-Xlint:unchecked', '-Xlint:deprecation']
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+}
+
+eclipse.project.name = 'the-last-remnant-parent'

@@ -1,0 +1,49 @@
+{
+  "_info": "Gema memori pada benda & catatan jurnal. PJ: Insan (Puzzle, memory, quest). Teks naskah dibantu Carlos.",
+  "echoes": [
+    {
+      "id": "radio",
+      "name": "Radio tua",
+      "sprite": "obj_radio",
+      "inspect": "inspect_radio",
+      "echo": "echo_radio",
+      "journalTitle": "Lagu di radio Pak Darto",
+      "journalText": "Seorang perempuan minta volume radio dibesarkan karena lagu yang diputar adalah 'lagu kita'. Pak Darto muda tertawa dan pura-pura melarang. Rekaman terputus. The Remnant menandainya dengan kode BT-0417.\n\nPak Darto ingat radionya, tapi tidak ingat lagunya. Apalagi perempuan itu."
+    },
+    {
+      "id": "photo",
+      "name": "Foto lama",
+      "sprite": "obj_photo",
+      "inspect": "inspect_photo",
+      "echo": "echo_photo",
+      "journalTitle": "Hari pertama warung",
+      "journalText": "Bu Sari muda berdiri di depan warung yang baru dicat, bersama laki-laki bernama Hadi. Hadi bilang foto itu tidak mungkin jelek karena ada Sari di dalamnya.\n\nKode BT-1102. Alasan penghapusan: DUKA. Jadi yang dihapus bukan rasa sedihnya saja, tapi orangnya juga."
+    },
+    {
+      "id": "kite",
+      "name": "Layangan putus",
+      "sprite": "obj_kite",
+      "inspect": "inspect_kite",
+      "echo": "echo_kite",
+      "journalTitle": "Janji soal layangan",
+      "journalText": "Seorang bapak mengajari anaknya menerbangkan layangan. Kalau putus, katanya, mereka akan mencarinya bersama. Layangannya masih tersangkut di sini.\n\nKode BT-0730. Pemilik memori tidak teridentifikasi. Siapa pun anak itu, mungkin ia sudah lupa pernah dijanjikan apa pun."
+    }
+  ],
+  "notes": [
+    {
+      "id": "delivery",
+      "title": "Paket tanpa pengirim",
+      "text": "Tujuan: Gg. Kenanga No. 17, Depok Selatan.\nPengirim: kosong. Nomor telepon: kosong.\n\nDi atas kardus ada tulisan tangan: 'Untuk yang masih ingat.'\nAplikasi kurir tidak bisa menemukan titik lokasinya."
+    },
+    {
+      "id": "remnant",
+      "title": "The Remnant",
+      "text": "Isi paket untuk Pak Darto: perangkat genggam dengan layar retak. Menyala sendiri waktu kusentuh dan menyebut dirinya 'pembaca jejak memori'.\n\nPak Darto memintaku menyimpannya. Katanya, kalau di tangannya, alat itu mungkin ikut ia lupakan."
+    },
+    {
+      "id": "brownteddy",
+      "title": "Brown Teddy",
+      "text": "Aplikasi dengan logo beruang cokelat. Iklannya ada di mana-mana: 'Lupakan yang menyakitkan.' Bu Sari dan Pak Darto sama-sama memakainya.\n\nSemua gema memori yang kubaca punya kode berawalan BT. Ini bukan kebetulan."
+    }
+  ]
+}

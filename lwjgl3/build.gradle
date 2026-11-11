@@ -1,0 +1,37 @@
+// Modul desktop (LWJGL3): hanya launcher. Jalankan dengan  ./gradlew lwjgl3:run
+apply plugin: 'application'
+
+eclipse.project.name = appName + '-lwjgl3'
+sourceSets.main.resources.srcDirs += [rootProject.file('assets').path]
+
+application {
+    mainClass = 'com.kelompok7.lastremnant.lwjgl3.Lwjgl3Launcher'
+    applicationName = appName
+}
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation project(':core')
+}
+
+run {
+    workingDir = rootProject.file('assets')
+    ignoreExitValue = true
+    // macOS wajib menjalankan GLFW di thread pertama
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs += ['-XstartOnFirstThread']
+    }
+}
+
+// ./gradlew lwjgl3:jar  ->  lwjgl3/build/libs/TheLastRemnant-0.2.0.jar (bisa dijalankan langsung)
+jar {
+    archiveBaseName.set(appName)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn configurations.runtimeClasspath
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/maven/**')
+    manifest {
+        attributes 'Main-Class': application.mainClass.get()
+    }
+}

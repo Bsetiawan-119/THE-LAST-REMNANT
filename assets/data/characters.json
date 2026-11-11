@@ -1,0 +1,32 @@
+{
+  "_info": "Data tokoh. PJ: Carlos (Dialogue & story). 'dialogues' dicek dari atas ke bawah; yang pertama lolos syarat 'if' dipakai.",
+  "characters": [
+    { "id": "iwan",   "name": "Iwan",        "sprite": "iwan",  "voice": 1.0 },
+    {
+      "id": "sari", "name": "Bu Sari", "sprite": "sari", "voice": 1.18,
+      "dialogues": [
+        { "if": "w2_done",                                      "id": "sari_done" },
+        { "if": "scanned_kite,scanned_photo,scanned_radio",     "id": "sari_photo" },
+        { "if": "has_remnant",                                  "id": "sari_after" },
+        { "if": "met_sari",                                     "id": "sari_repeat" },
+        {                                                       "id": "sari_intro" }
+      ]
+    },
+    {
+      "id": "darto", "name": "Pak Darto", "sprite": "darto", "voice": 0.78,
+      "dialogues": [
+        { "if": "scanned_radio",  "id": "darto_radio" },
+        { "if": "has_remnant",    "id": "darto_after" },
+        {                         "id": "darto_intro" }
+      ]
+    },
+    { "id": "remnant",  "name": "The Remnant",     "portrait": "remnant_icon", "voice": 1.7,  "style": "system" },
+    { "id": "echo_f",   "name": "Suara Perempuan", "voice": 1.25, "style": "echo" },
+    { "id": "echo_m",   "name": "Suara Laki-laki", "voice": 0.9,  "style": "echo" },
+    { "id": "echo_hadi","name": "Hadi",            "voice": 0.95, "style": "echo" },
+    { "id": "echo_sari","name": "Sari",            "voice": 1.25, "style": "echo" },
+    { "id": "echo_kid", "name": "Suara Anak",      "voice": 1.5,  "style": "echo" },
+    { "id": "echo_dad", "name": "Suara Bapak",     "voice": 0.85, "style": "echo" },
+    { "id": "narrator", "name": "",                "voice": 0.9,  "style": "narration" }
+  ]
+}

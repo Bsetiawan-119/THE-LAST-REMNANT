@@ -1,0 +1,3 @@
+// THE LAST REMNANT · Kelompok 7 · struktur proyek ala gdx-liftoff (core + lwjgl3)
+rootProject.name = 'the-last-remnant'
+include 'core', 'lwjgl3'

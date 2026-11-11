@@ -1,0 +1,137 @@
+{
+  "_info": "Naskah dialog. PJ: Carlos (Dialogue & story). Satu baris maks +-180 karakter agar muat di kotak dialog. Aksi: flag, unflag, objective, device, note, sfx, toast.",
+  "dialogues": [
+
+    { "id": "intro", "start": "a", "nodes": [
+      { "id": "a", "speaker": "narrator", "text": "Depok Selatan. Sore, pukul 16.40. Langit oranye, aspal masih hangat bekas hujan siang.", "next": "b" },
+      { "id": "b", "speaker": "iwan", "text": "Paket terakhir hari ini. Gg. Kenanga No. 17... tapi aplikasinya nggak nunjukin titik lokasi sama sekali.", "next": "c" },
+      { "id": "c", "speaker": "iwan", "text": "Nggak ada nama pengirim, nggak ada nomor telepon. Cuma tulisan tangan di kardus: \"Untuk yang masih ingat.\"", "next": "d", "actions": ["note:delivery"] },
+      { "id": "d", "speaker": "iwan", "text": "Mending tanya warung di seberang. Ibu warung biasanya hafal semua alamat di sini.", "actions": ["objective:Tanyakan alamat Gg. Kenanga No. 17 di warung."] }
+    ]},
+
+    { "id": "sari_intro", "start": "a", "nodes": [
+      { "id": "a", "speaker": "sari", "text": "Eh, Mas kurir. Mau beli apa? Kopi sachet tinggal yang hitam, yang susu habis diborong anak-anak ojol.", "next": "b" },
+      { "id": "b", "speaker": "iwan", "text": "Bukan beli, Bu. Mau numpang tanya alamat. Gang Kenanga nomor 17 sebelah mana, ya?", "next": "c" },
+      { "id": "c", "speaker": "sari", "text": "Kenanga itu gang di seberang jalan, yang ada jembatan kecil di atas selokan. Nomor 17 rumahnya Pak Darto, catnya krem.", "next": "d",
+        "actions": ["flag:met_sari", "objective:Antar paket ke rumah Pak Darto, Gg. Kenanga No. 17."] },
+      { "id": "d", "speaker": "sari", "text": "Tapi Mas jangan kaget, ya. Pak Darto akhir-akhir ini suka lupa. Kemarin dia nanya ke saya, rumahnya di mana.", "next": "hub" },
+      { "id": "hub", "speaker": "sari", "text": "Ada lagi yang mau ditanya, Mas?", "choices": [
+        { "text": "Lupa? Sejak kapan, Bu?",            "next": "q1", "if": "!sari_q1", "actions": ["flag:sari_q1"] },
+        { "text": "Banyak yang kayak gitu di sini?",    "next": "q2", "if": "!sari_q2", "actions": ["flag:sari_q2"] },
+        { "text": "Makasih, Bu. Saya ke sana dulu.",   "next": "bye" }
+      ]},
+      { "id": "q1", "speaker": "sari", "text": "Sejak dia pasang aplikasi... apa itu namanya, yang logonya beruang cokelat. Katanya bikin tidur nyenyak.", "next": "q1b" },
+      { "id": "q1b", "speaker": "iwan", "text": "Beruang cokelat?", "next": "q1c" },
+      { "id": "q1c", "speaker": "sari", "text": "Brown Teddy. Iklannya di mana-mana, Mas. Saya juga pakai, kok. Hidup jadi enteng, nggak banyak pikiran.", "next": "hub",
+        "actions": ["note:brownteddy"] },
+      { "id": "q2", "speaker": "sari", "text": "Lumayan. Pak RT lupa ulang tahun cucunya. Bu Ratna lupa dia pernah punya kucing. Kucingnya masih nungguin di depan pintu.", "next": "q2b" },
+      { "id": "q2b", "speaker": "sari", "text": "Ya namanya juga umur. Saya sendiri juga suka lupa naruh kunci. Ha... ha.", "next": "hub" },
+      { "id": "bye", "speaker": "sari", "text": "Hati-hati, Mas. Jembatannya licin habis hujan." }
+    ]},
+
+    { "id": "sari_repeat", "start": "a", "nodes": [
+      { "id": "a", "speaker": "sari", "text": "Gang Kenanga di seberang, Mas. Lewat jembatan kecil, lurus ke bawah, rumah krem yang nomornya biru." }
+    ]},
+
+    { "id": "darto_intro", "start": "a", "nodes": [
+      { "id": "a", "speaker": "darto", "text": "Ya? Cari siapa?", "next": "b" },
+      { "id": "b", "speaker": "iwan", "text": "Paket, Pak. Untuk Gang Kenanga nomor 17.", "next": "c" },
+      { "id": "c", "speaker": "darto", "text": "Paket? Saya nggak pesan apa-apa. Saya... seingat saya, nggak pesan apa-apa.", "next": "d" },
+      { "id": "d", "speaker": "iwan", "text": "Pengirimnya kosong, Pak. Cuma ada tulisan tangan: \"Untuk yang masih ingat.\"", "next": "e" },
+      { "id": "e", "speaker": "darto", "text": "...", "next": "f" },
+      { "id": "f", "speaker": "darto", "text": "Tulisan itu rasanya saya kenal. Tapi tiap saya coba ingat, kepala saya kayak... bersih. Kosong. Seperti lantai habis dipel.", "choices": [
+        { "text": "Mau saya bantu buka, Pak?",                 "next": "open" },
+        { "text": "Kalau Bapak ragu, paketnya saya bawa balik.", "next": "refuse" }
+      ]},
+      { "id": "refuse", "speaker": "darto", "text": "Jangan! ...Jangan. Maaf, Mas. Buka saja di sini. Saya nggak mau ini hilang juga.", "next": "open" },
+      { "id": "open", "speaker": "narrator", "text": "Di dalam kardus ada perangkat kecil berlayar retak. Begitu jari Iwan menyentuhnya, layarnya menyala biru.", "next": "r1",
+        "actions": ["sfx:scan"] },
+      { "id": "r1", "speaker": "remnant", "text": "SINKRONISASI... PENGGUNA BARU TERDETEKSI.", "next": "r2" },
+      { "id": "r2", "speaker": "remnant", "text": "THE REMNANT v0.9. PEMBACA JEJAK MEMORI. ARAHKAN KE BENDA YANG PERNAH DICINTAI.", "next": "g" },
+      { "id": "g", "speaker": "iwan", "text": "Pak... ini alat apa?", "next": "h" },
+      { "id": "h", "speaker": "darto", "text": "Saya nggak tahu. Tapi Mas pegang saja dulu. Kalau di tangan saya, saya takut alat ini juga ikut saya lupakan.", "next": "i" },
+      { "id": "i", "speaker": "darto", "text": "Radio di teras itu, coba. Itu radio saya dari muda. Anehnya, saya cuma ingat radionya. Lagunya nggak.",
+        "actions": ["device:on", "flag:has_remnant", "note:remnant",
+                    "objective:Pindai benda bermakna dengan The Remnant (0/3).", "toast:The Remnant aktif. Benda yang berpendar menyimpan memori."] }
+    ]},
+
+    { "id": "darto_after", "start": "a", "nodes": [
+      { "id": "a", "speaker": "darto", "text": "Lagu apa ya yang dulu sering diputar di radio itu... Ah, sudahlah. Kalau lupa, berarti nggak penting, kan?", "next": "b" },
+      { "id": "b", "speaker": "iwan", "text": "(Kalimatnya kedengaran kayak hafalan. Seperti iklan.)" }
+    ]},
+
+    { "id": "darto_radio", "start": "a", "nodes": [
+      { "id": "a", "speaker": "darto", "text": "Mas habis nyalain alat itu di radio saya? Barusan ada yang lewat di kepala. Suara perempuan... nyanyi.", "next": "b" },
+      { "id": "b", "speaker": "darto", "text": "Siapa, ya. Nggak apa-apa. Nanti juga hilang lagi. Biasanya begitu.", "choices": [
+        { "text": "Bapak nggak mau ingat lagi?", "next": "c" },
+        { "text": "Nanti saya cari tahu, Pak.",  "next": "d" }
+      ]},
+      { "id": "c", "speaker": "darto", "text": "Mau. Tapi waktu saya pasang Brown Teddy, saya sendiri yang setuju. Jadi pasti ada alasannya, kan, Mas? ...Kan?" },
+      { "id": "d", "speaker": "darto", "text": "Terima kasih. Aneh, ya. Saya berterima kasih untuk sesuatu yang saya sendiri nggak tahu apa." }
+    ]},
+
+    { "id": "sari_after", "start": "a", "nodes": [
+      { "id": "a", "speaker": "sari", "text": "Lho, Mas balik lagi. Paketnya udah sampai?", "next": "b" },
+      { "id": "b", "speaker": "iwan", "text": "Udah, Bu. Isinya... aneh. Bu Sari tahu benda-benda tua di sekitar sini?", "next": "c" },
+      { "id": "c", "speaker": "sari", "text": "Bangku taman di seberang itu dulu tempat anak muda pacaran. Terus ada layangan nyangkut di dekat pohon, entah dari kapan.", "next": "d" },
+      { "id": "d", "speaker": "sari", "text": "Kenapa, Mas? Kok lihatnya serius banget." }
+    ]},
+
+    { "id": "sari_photo", "start": "a", "nodes": [
+      { "id": "a", "speaker": "iwan", "text": "Bu, saya nemu foto ini di bangku taman. Ibu kenal laki-laki yang di sebelah Ibu?", "next": "b" },
+      { "id": "b", "speaker": "sari", "text": "Itu saya, waktu warung ini baru buka. Catnya masih kinclong, ya.", "next": "c" },
+      { "id": "c", "speaker": "sari", "text": "Tapi laki-laki ini... siapa, ya? Kok tangannya di bahu saya?", "next": "d" },
+      { "id": "d", "speaker": "iwan", "text": "Namanya Hadi, Bu.", "next": "e" },
+      { "id": "e", "speaker": "sari", "text": "Hadi.", "next": "f" },
+      { "id": "f", "speaker": "sari", "text": "Aneh, Mas. Saya nggak kenal dia. Tapi dada saya sesak lihat senyumnya.", "next": "g" },
+      { "id": "g", "speaker": "iwan", "text": "(Kalau Brown Teddy cuma menghapus yang menyakitkan... kenapa yang hilang dari Bu Sari justru orang yang ia cintai?)", "next": "h" },
+      { "id": "h", "speaker": "narrator", "text": "The Remnant bergetar pelan di saku Iwan. Tiga kode BT di layarnya bergeser, lalu menyatu jadi satu baris.", "next": "i",
+        "actions": ["sfx:scan"] },
+      { "id": "i", "speaker": "remnant", "text": "JEJAK TERHUBUNG: BROWN TEDDY. LOKASI SUMBER: TIDAK DIKETAHUI. LANJUTKAN PENCARIAN.",
+        "actions": ["flag:w2_done", "objective:Cari tahu siapa yang membuat Brown Teddy.", "toast:Akhir prototype W2 - terima kasih sudah bermain!"] }
+    ]},
+
+    { "id": "sari_done", "start": "a", "nodes": [
+      { "id": "a", "speaker": "sari", "text": "Mas... kalau nanti ketemu orang yang bikin aplikasi itu, tolong tanyain, ya.", "next": "b" },
+      { "id": "b", "speaker": "sari", "text": "Apa saya sendiri yang minta dia dilupakan?" }
+    ]},
+
+    { "id": "inspect_radio", "start": "a", "nodes": [
+      { "id": "a", "speaker": "iwan", "text": "Radio tua merek lokal. Tombolnya berdebu tebal. Kayaknya sudah lama banget nggak dinyalain." }
+    ]},
+    { "id": "inspect_photo", "start": "a", "nodes": [
+      { "id": "a", "speaker": "iwan", "text": "Foto lama tertinggal di bangku. Perempuan berkerudung dan laki-laki berkemeja, berdiri di depan warung yang baru dicat." }
+    ]},
+    { "id": "inspect_kite", "start": "a", "nodes": [
+      { "id": "a", "speaker": "iwan", "text": "Layangan putus. Benangnya masih kusut di semak. Warnanya sudah pudar kena matahari." }
+    ]},
+
+    { "id": "echo_radio", "start": "a", "nodes": [
+      { "id": "a", "speaker": "remnant", "text": "JEJAK MEMORI TERBACA. MEMUTAR ULANG...", "next": "b" },
+      { "id": "b", "speaker": "echo_f", "text": "Darto, besarin volumenya! Ini lagu kita!", "next": "c" },
+      { "id": "c", "speaker": "echo_m", "text": "Iya, iya. Tapi jangan nyanyi kenceng-kenceng, nanti tetangga protes.", "next": "d" },
+      { "id": "d", "speaker": "echo_f", "text": "Biarin. Biar satu Depok tahu aku lagi bahagia.", "next": "e" },
+      { "id": "e", "speaker": "remnant", "text": "...DATA TERPOTONG. TANDA PENGHAPUSAN: BT-0417.", "next": "f" },
+      { "id": "f", "speaker": "iwan", "text": "BT... Brown Teddy?" }
+    ]},
+
+    { "id": "echo_photo", "start": "a", "nodes": [
+      { "id": "a", "speaker": "remnant", "text": "JEJAK MEMORI TERBACA. MEMUTAR ULANG...", "next": "b" },
+      { "id": "b", "speaker": "echo_hadi", "text": "Senyum, Sar! Warung kita resmi buka hari ini.", "next": "c" },
+      { "id": "c", "speaker": "echo_sari", "text": "Malu, Mas Hadi. Nanti fotonya jelek.", "next": "d" },
+      { "id": "d", "speaker": "echo_hadi", "text": "Nggak mungkin jelek. Ada kamu di situ.", "next": "e" },
+      { "id": "e", "speaker": "remnant", "text": "TANDA PENGHAPUSAN: BT-1102. SUBJEK: SARI W. ALASAN: DUKA.", "next": "f" },
+      { "id": "f", "speaker": "iwan", "text": "Duka... Berarti Mas Hadi sudah nggak ada. Dan Bu Sari dibuat lupa kalau dia pernah ada." }
+    ]},
+
+    { "id": "echo_kite", "start": "a", "nodes": [
+      { "id": "a", "speaker": "remnant", "text": "JEJAK MEMORI TERBACA. MEMUTAR ULANG...", "next": "b" },
+      { "id": "b", "speaker": "echo_kid", "text": "Pak, talinya kepanjangan! Nanti nyangkut!", "next": "c" },
+      { "id": "c", "speaker": "echo_dad", "text": "Justru itu serunya. Layangan harus berani terbang tinggi, Nak.", "next": "d" },
+      { "id": "d", "speaker": "echo_kid", "text": "Kalau putus gimana?", "next": "e" },
+      { "id": "e", "speaker": "echo_dad", "text": "Kalau putus, kita cari sama-sama. Bapak janji.", "next": "f" },
+      { "id": "f", "speaker": "remnant", "text": "TANDA PENGHAPUSAN: BT-0730. PEMILIK MEMORI: TIDAK TERIDENTIFIKASI.", "next": "g" },
+      { "id": "g", "speaker": "iwan", "text": "Layangannya masih di sini. Tapi orang yang janji mau mencarinya... ke mana?" }
+    ]}
+  ]
+}
