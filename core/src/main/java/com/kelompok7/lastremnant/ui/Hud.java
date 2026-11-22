@@ -16,6 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Queue;
+import com.kelompok7.lastremnant.combat.Ammo;
+import com.kelompok7.lastremnant.combat.Health;
+import com.kelompok7.lastremnant.combat.Inventory;
+import com.kelompok7.lastremnant.combat.Weapon;
 import com.kelompok7.lastremnant.memory.Journal;
 import com.kelompok7.lastremnant.memory.JournalEntry;
 import com.kelompok7.lastremnant.memory.JournalListener;
@@ -47,6 +51,11 @@ public class Hud implements StoryListener, JournalListener {
     private final Table devicePanel = new Table();
     private final Image[] slots;
     private final Label fragmentLabel;
+    private final Label combatLabel;
+    private Health health;
+    private Inventory inventory;
+    private Ammo observedAmmo;
+    private final Runnable combatChange = this::updateCombat;
     private final Container<Label> promptBox;
     private final Label promptLabel;
     private final Label journalHint;
@@ -84,7 +93,7 @@ public class Hud implements StoryListener, JournalListener {
         top.add(new Label("THE REMNANT", st.accent));
         devicePanel.add(top).left().row();
         Table slotRow = new Table();
-        slots = new Image[device.getCapacity()];
+        slots = new Image[device.getAmuletCapacity()];
         for (int i = 0; i < slots.length; i++) {
             slots[i] = new Image(st.slotEmpty);
             slotRow.add(slots[i]).size(12).padRight(3);
@@ -92,6 +101,10 @@ public class Hud implements StoryListener, JournalListener {
         fragmentLabel = new Label("", st.dim);
         slotRow.add(fragmentLabel).padLeft(4);
         devicePanel.add(slotRow).left().padTop(4);
+        combatLabel = new Label("", st.warm);
+        devicePanel.row();
+        devicePanel.add(combatLabel).left().padTop(4);
+        combatLabel.setVisible(false);
         devicePanel.setVisible(false);
 
         // --- petunjuk interaksi (bawah tengah) ---
@@ -158,13 +171,13 @@ public class Hud implements StoryListener, JournalListener {
 
     private void refreshCounters() {
         devicePanel.setVisible(device.isActive());
-        int frags = device.getFragmentCount();
+        int frags = device.getAmuletCount();
         if (frags != lastFragments) {
             lastFragments = frags;
             for (int i = 0; i < slots.length; i++) {
                 slots[i].setDrawable(i < frags ? st.slotFull : st.slotEmpty);
             }
-            fragmentLabel.setText("Fragmen " + frags + "/" + device.getCapacity());
+            fragmentLabel.setText("Amulet " + frags + "/" + device.getAmuletCapacity());
         }
         int unread = journal.getUnreadCount();
         if (unread != lastUnread) {
@@ -174,6 +187,39 @@ public class Hud implements StoryListener, JournalListener {
                     ? dim + "[[J] Jurnal[]  " + UiStyles.hex(UiStyles.ACCENT) + "(" + unread + " baru)[]"
                     : dim + "[[J] Jurnal    [[Esc] Menu[]");
         }
+    }
+
+    public void attachCombat(Health newHealth, Inventory newInventory) {
+        detachCombat();
+        health = newHealth;
+        inventory = newInventory;
+        health.addListener(combatChange);
+        inventory.addListener(combatChange);
+        combatLabel.setVisible(true);
+        updateCombat();
+    }
+
+    public void detachCombat() {
+        if (health != null) health.removeListener(combatChange);
+        if (inventory != null) inventory.removeListener(combatChange);
+        if (observedAmmo != null) observedAmmo.removeListener(combatChange);
+        observedAmmo = null;
+        inventory = null;
+        health = null;
+        combatLabel.setVisible(false);
+    }
+
+    private void updateCombat() {
+        Weapon weapon = inventory.active();
+        Ammo ammo = weapon == null ? null : weapon.ammo();
+        if (observedAmmo != ammo) {
+            if (observedAmmo != null) observedAmmo.removeListener(combatChange);
+            observedAmmo = ammo;
+            if (observedAmmo != null) observedAmmo.addListener(combatChange);
+        }
+        combatLabel.setText("HP " + health.value() + "/" + health.max() + "   "
+                + (weapon == null ? "Tanpa senjata" : weapon.name())
+                + (ammo == null ? "" : " " + ammo.loaded() + "/" + ammo.reserve()));
     }
 
     // ------------------------------------------------------------------ API

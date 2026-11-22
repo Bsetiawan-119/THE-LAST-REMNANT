@@ -11,9 +11,11 @@
 package com.kelompok7.lastremnant.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -47,7 +49,11 @@ import com.kelompok7.lastremnant.memory.JournalEntry;
 import com.kelompok7.lastremnant.memory.MemoryDatabase;
 import com.kelompok7.lastremnant.memory.MemoryDevice;
 import com.kelompok7.lastremnant.memory.MemoryEcho;
+import com.kelompok7.lastremnant.memory.PrologueProgress;
+import com.kelompok7.lastremnant.stage.StageOne;
+import com.kelompok7.lastremnant.state.CombatState;
 import com.kelompok7.lastremnant.state.DialogueState;
+import com.kelompok7.lastremnant.state.WakeState;
 import com.kelompok7.lastremnant.state.ExplorationState;
 import com.kelompok7.lastremnant.state.GameStateManager;
 import com.kelompok7.lastremnant.state.JournalState;
@@ -61,6 +67,7 @@ import com.kelompok7.lastremnant.ui.UiStyles;
 import com.kelompok7.lastremnant.util.Constants;
 import com.kelompok7.lastremnant.world.CollisionSystem;
 import com.kelompok7.lastremnant.world.World;
+import com.kelompok7.lastremnant.world.StageArea;
 
 /**
  * Menyatukan modul semua anggota:
@@ -85,9 +92,15 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     private final Stage uiStage;
 
     // --- modul tim ---
-    private final World world;
-    private final CollisionSystem collision;
-    private final Player player;
+    private World world;
+    private StageArea area;
+    private StageArea pendingArea;
+    private StageOne stageOne;
+    private boolean wakeCracks;
+    private boolean awakeningShown;
+    private final Vector2 pointer = new Vector2();
+    private CollisionSystem collision;
+    private Player player;
     private final InputHandler inputHandler = InputHandler.withDefaultBindings();
     private final GameStateManager stateManager = new GameStateManager();
     private final StoryManager story = new StoryManager();
@@ -123,15 +136,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         dialogues = DialogueRepository.fromJson(assets.readData("dialogues.json"));
         memories = MemoryDatabase.fromJson(assets.readData("memories.json"));
 
-        // dunia & entity
-        world = new World(Constants.TEST_MAP, batch);
-        collision = new CollisionSystem(world.getSolids(), world.getBounds());
-        World.Spawn ps = world.findSpawn("player");
-        player = new Player(ps != null ? ps.x : 48f, ps != null ? ps.y : 48f, collision);
-        player.setSprites(assets.characterSprites("iwan"));
-        player.setFacing(Direction.RIGHT);
-        entities.add(player);
-        spawnEntities();
+        loadArea(StageArea.PROLOGUE);
 
         // UI
         uiStage = new Stage(new FitViewport(Constants.UI_WIDTH, Constants.UI_HEIGHT), batch);
@@ -144,12 +149,32 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         dialogueUI = new DialogueUI(uiStage, styles, assets, characters);
         journalUI = new JournalUI(uiStage, styles, assets, journal, device);
         curtain = styles.fadeCurtain();
+        curtain.setDrawable(styles.solid(Color.WHITE));
         uiStage.addActor(curtain);
         indicator = assets.region("indicator");
 
         // Observer: HUD mendengarkan cerita & jurnal
         story.addListener(hud);
         journal.addListener(hud);
+    }
+
+    private void loadArea(StageArea destination) {
+        World next = new World(destination.mapPath(), batch);
+        if (world != null) world.dispose();
+        area = destination;
+        world = next;
+        entities.clear();
+        interactables.clear();
+        focus = null;
+        collision = new CollisionSystem(world.getSolids(), world.getBounds());
+        World.Spawn spawn = world.findSpawn("player");
+        player = new Player(spawn != null ? spawn.x : 48, spawn != null ? spawn.y : 48, collision);
+        player.setSprites(assets.characterSprites(characters.get("zentra").getSpriteKey()));
+        player.setFacing(Direction.RIGHT);
+        entities.add(player);
+        if (destination == StageArea.PROLOGUE) spawnEntities();
+        else stageOne.load(world, destination);
+        snapCamera();
     }
 
     /** Buat NPC & benda memori dari layer "entities" di peta. */
@@ -183,12 +208,21 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     @Override
     public void show() {
+        curtain.setColor(0, 0, 0, 1);
         InputMultiplexer mux = new InputMultiplexer();
         mux.addProcessor(uiStage);                       // klik mouse pada pilihan dialog
         mux.addProcessor(new InputAdapter() {            // tombol khusus state (jurnal, dialog)
             @Override
             public boolean keyDown(int keycode) {
                 return !leaving && stateManager.keyDown(keycode);
+            }
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointerIndex, int button) {
+                if (leaving || button != Input.Buttons.LEFT || !stateManager.isCurrent(CombatState.class)) return false;
+                viewport.unproject(pointer.set(screenX, screenY));
+                stageOne.attack(pointer.x - player.getX(), pointer.y - player.getY());
+                return true;
             }
         });
         mux.addProcessor(inputHandler);                  // tombol gerak & interaksi (Command)
@@ -207,6 +241,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         time += delta;
 
         stateManager.update(delta);
+        applyPendingArea();
         hud.update(delta);
 
         ScreenUtils.clear(0.06f, 0.05f, 0.09f, 1f);
@@ -223,8 +258,10 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         for (Entity e : entities) {
             e.render(batch);               // polimorfisme: Player, NPC, MemoryObject
         }
+        if (stageOne != null) stageOne.render(batch);
         batch.end();
         world.renderAbove(camera);
+        if (wakeCracks) renderCracks();
 
         // penanda interaksi digambar paling atas supaya tidak tertutup pohon
         if (focus != null) {
@@ -260,6 +297,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     public void dispose() {
         story.removeListener(hud);
         journal.removeListener(hud);
+        hud.detachCombat();
         world.dispose();
         uiStage.dispose();
     }
@@ -268,6 +306,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     /** Update semua entity (polimorfik) + kamera. */
     public void updateWorld(float delta) {
+        if (leaving) return;
         for (Entity e : entities) {
             e.update(delta);
         }
@@ -276,6 +315,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     /** Interactable terdekat yang bersinggungan dengan probe di depan Iwan. */
     public Interactable findInteractTarget() {
+        if (leaving) return null;
         Rectangle probe = player.getInteractionProbe();
         Interactable best = null;
         float bestDist = Float.MAX_VALUE;
@@ -296,7 +336,10 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     public void setFocus(Interactable target) {
         focus = target;
-        hud.setPrompt(target != null ? target.getInteractLabel(this) : null);
+        String prompt = target != null ? target.getInteractLabel(this) : null;
+        if (prompt == null && !leaving && stageOne != null && stateManager.isCurrent(CombatState.class)
+                && stageOne.canBackstab()) prompt = "Tusuk Boneka dari belakang";
+        hud.setPrompt(prompt);
     }
 
     public void openJournal() {
@@ -360,6 +403,13 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
             if (onFinished != null) onFinished.run();
             return;
         }
+        if ("sari_photo".equals(dialogueId) && area == StageArea.PROLOGUE) {
+            startDialogue(dialogues.get(dialogueId), () -> {
+                if (onFinished != null) onFinished.run();
+                beginWake();
+            });
+            return;
+        }
         startDialogue(dialogues.get(dialogueId), onFinished);
     }
 
@@ -372,15 +422,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     @Override
     public void onEchoScanned(MemoryEcho echo, JournalEntry entry) {
         assets.play("scan", 0.8f, 1f);
-        // [W2 sementara] progres pindai ditulis langsung di sini.
-        // W3: dipindah ke QuestManager (Insan) yang mengumumkan perubahan lewat Observer.
-        int done = device.getScannedCount();
-        int total = memories.echoCount();
-        if (done < total) {
-            story.setObjective("Pindai benda bermakna dengan The Remnant (" + done + "/" + total + ").");
-        } else {
-            story.setObjective("Tunjukkan foto lama dari bangku taman kepada Bu Sari.");
-        }
+        story.setObjective(PrologueProgress.objective(device));
     }
 
     // ================================================================== DialogueActionHandler
@@ -414,6 +456,92 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
                 Gdx.app.error("GameScreen", "Aksi dialog tidak dikenal: " + action);
         }
     }
+
+    private void beginWake() {
+        if (wakeCracks) return;
+        wakeCracks = true;
+        story.setObjective("");
+        startDialogue("wake_up", () -> stateManager.set(new WakeState(this)));
+    }
+
+    public void setWakeFlash(float elapsed) {
+        curtain.clearActions();
+        if (elapsed < 0.48f) curtain.setColor(1, 1, 1, Math.min(elapsed * 5f, 1f));
+        else curtain.setColor(0, 0, 0, 1);
+    }
+
+    private void renderCracks() {
+        float cx = camera.position.x, cy = camera.position.y;
+        batch.begin();
+        batch.setColor(0.58f, 0.93f, 1f, 0.75f);
+        crack(cx, cy + 20, cx - 53, cy + 54);
+        crack(cx - 53, cy + 54, cx - 121, cy + 48);
+        crack(cx - 53, cy + 54, cx - 80, cy + 126);
+        crack(cx, cy + 20, cx + 48, cy + 55);
+        crack(cx + 48, cy + 55, cx + 142, cy + 95);
+        crack(cx + 48, cy + 55, cx + 73, cy - 46);
+        crack(cx, cy + 20, cx - 43, cy - 61);
+        crack(cx - 43, cy - 61, cx - 91, cy - 126);
+        batch.setColor(1, 1, 1, 1);
+        batch.end();
+    }
+
+    private void crack(float x, float y, float endX, float endY) {
+        float dx = endX - x, dy = endY - y;
+        batch.draw(assets.region("pixel"), x, y, 0, 0, Vector2.len(dx, dy), 1, 1, 1,
+                MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees);
+    }
+
+    public void queueArea(StageArea destination) {
+        if (!leaving && pendingArea == null) pendingArea = destination;
+    }
+
+    private void applyPendingArea() {
+        if (pendingArea == null || leaving) return;
+        StageArea next = pendingArea;
+        pendingArea = null;
+        if (stageOne == null) createStageOne();
+        inputHandler.reset();
+        loadArea(next);
+        wakeCracks = false;
+        curtain.setColor(0, 0, 0, 1);
+        curtain.clearActions();
+        curtain.addAction(Actions.fadeOut(0.68f));
+        stateManager.set(new CombatState(this));
+        hud.showLocation(world.getDisplayName().toUpperCase(java.util.Locale.ROOT), "STAGE 1");
+        if (next == StageArea.COCOON_CITY && !awakeningShown) {
+            awakeningShown = true;
+            startDialogue("cocoon_awakening", null);
+        }
+    }
+
+    private void createStageOne() {
+        stageOne = new StageOne(this);
+        hud.attachCombat(stageOne.health(), stageOne.inventory());
+    }
+
+    public void offerRetry() {
+        startDialogue(Dialogue.linear("retry_stage1", "narrator",
+                "Pandangan Zentra gelap. Tekan E untuk memulai ulang Kota Kepompong."), () -> {
+            createStageOne();
+            story.clearFlag("hid_in_closet");
+            queueArea(StageArea.COCOON_CITY);
+        });
+    }
+
+    public void addStageEntity(Entity entity) {
+        entities.add(entity);
+        if (entity instanceof Interactable target) interactables.add(target);
+    }
+
+    public void removeStageEntity(Entity entity) {
+        entities.removeValue(entity, true);
+        if (entity instanceof Interactable target) interactables.removeValue(target, true);
+    }
+
+    public void addNote(String id) { journal.addEntry(memories.createNote(id)); }
+    public CollisionSystem collision() { return collision; }
+    public StageOne stageOne() { return stageOne; }
 
     // ================================================================== getter untuk state
 

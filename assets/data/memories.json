@@ -44,6 +44,15 @@
       "id": "brownteddy",
       "title": "Brown Teddy",
       "text": "Aplikasi dengan logo beruang cokelat. Iklannya ada di mana-mana: 'Lupakan yang menyakitkan.' Bu Sari dan Pak Darto sama-sama memakainya.\n\nSemua gema memori yang kubaca punya kode berawalan BT. Ini bukan kebetulan."
-    }
+    },
+    {"id": "citizen_412", "title": "Catatan warga, hari ke-412", "text": "Mereka tidak membunuh kami. Mereka mencari sesuatu. Kalung berbentuk daun."},
+    {"id": "map_exit", "title": "Papan foto dan benang merah", "text": "Ratusan titik kepompong memenuhi peta Depok. Perpustakaan Arsip Kota dilingkari merah."},
+    {"id": "kalpataru", "title": "Kalpataru", "text": "Mesin berumur 100 abad. Hanya satu permintaan dari kesadaran manusia bisa dikabulkan. Kunci mesin pecah menjadi tiga amulet."},
+    {"id": "exitium", "title": "Sang Exitium", "text": "Ia tidak membenci kita. Ia hanya terlalu yakin bahwa ia benar."},
+    {"id": "puppets", "title": "Boneka", "text": "Pasukan pencari amulet. Mereka mengejar sumber suara dan kehilangan pandangan dalam gelap."},
+    {"id": "photo_exit", "title": "Foto Proyek EXIT", "text": "Dua orang di depan papan PROYEK EXIT. Wajah salah satunya dicoret. Di belakang foto tertulis: Maaf, K."},
+    {"id": "mask_exit", "title": "Topeng gas", "text": "Topeng gas tergantung di dinding. Bentuknya sama seperti yang terlihat dalam rekaman TV."},
+    {"id": "calendar_exit", "title": "Kalender", "text": "Tanggal berhenti dicoret sekitar tiga tahun lalu."},
+    {"id": "guard_id", "title": "Kartu identitas Boneka Penjaga", "text": "Rahmat, 34 tahun, tukang las. Boneka itu dulunya manusia."}
   ]
 }

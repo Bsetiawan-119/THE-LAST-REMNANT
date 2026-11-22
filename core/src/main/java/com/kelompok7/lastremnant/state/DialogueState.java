@@ -14,7 +14,7 @@ import com.kelompok7.lastremnant.screens.GameScreen;
 import com.kelompok7.lastremnant.ui.DialogueUI;
 
 /**
- * Selama dialog: Iwan tidak bisa berjalan, dunia tetap hidup (NPC & partikel jalan),
+ * Selama dialog: Iwan tidak bisa berjalan, dunia berhenti sementara,
  * semua tombol diarahkan ke DialogueUI. Saat sesi selesai, state ini mem-pop dirinya.
  */
 public class DialogueState implements GameState {
@@ -38,19 +38,20 @@ public class DialogueState implements GameState {
         screen.getDialogueUI().show(session, () -> {
             closedByUi = true;
             // dipanggil oleh DialogueUI saat sesi selesai -> kembali ke state sebelumnya
-            if (screen.getStateManager().current() == this) screen.getStateManager().pop();
+            if (screen.getStateManager().current() == this) {
+                screen.getStateManager().pop();
+                if (onFinished != null) onFinished.run();
+            }
         });
     }
 
     @Override
     public void exit() {
         if (!closedByUi) screen.getDialogueUI().forceHide();
-        if (onFinished != null) onFinished.run();
     }
 
     @Override
     public void update(float delta) {
-        screen.updateWorld(delta);
         screen.getDialogueUI().update(delta);
     }
 
