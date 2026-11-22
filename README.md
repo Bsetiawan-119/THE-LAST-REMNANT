@@ -1,145 +1,104 @@
 # THE LAST REMNANT
 
-> *Sebelum semuanya terlupakan.*
+Game petualangan aksi dan teka-teki 2D dengan gaya pixel art untuk desktop. Proyek akhir Pemrograman Berorientasi Objek, **Kelompok 7**, dikembangkan dari proposal **Sebelum PIKUN!**.
 
-Game naratif-puzzle 2D pixel art berbasis **Java 17+ / LibGDX 1.13.1**.  
-Final Project Pemrograman Berorientasi Objek, **Kelompok 7**.
+Zentra mengantar paket tanpa pengirim di Depok Selatan. Di dalamnya ada **The Remnant**, alat yang membaca gema memori dari benda. Radio Pak Darto, foto Bu Sari, dan layangan putus memperlihatkan jejak aplikasi **Brown Teddy**. Saat Bu Sari berteriak **BANGUN**, Zentra terjaga di Kota Kepompong dan mulai mencari tahu apa yang terjadi pada Depok.
 
-Iwan, kurir di Depok Selatan, mengantar paket tanpa pengirim bertuliskan "Untuk yang masih ingat." Isinya **The Remnant**, perangkat yang bisa membaca memori dari benda-benda. Dari situ Iwan sadar bahwa sistem bernama **Brown Teddy** memang menghapus kenangan yang menyakitkan, tetapi ikut menghapus bagian penting dari identitas manusia.
-
-![Area uji W2](docs/preview_test_area.png)
-
----
-
-## Status: Prototype W2 (milestone 17 November)
+## Target pencapaian W1–W5
 
 | Minggu | Target Gantt | Status |
 |---|---|---|
-| W1 · 4–10 Nov | Setup repo, interface, naskah, player & collision | ✅ |
-| **W2 · 11–17 Nov** | **Sistem dialog, MemoryDevice + jurnal, MainMenu + GameScreen, integrasi + unit test** | ✅ **prototype playable** |
-| W3 · 18–24 Nov | World/peta kota, Puzzle + QuestManager, konten NPC, DialogueUI/JournalUI final | ⏳ |
-| W4 · 25 Nov–1 Des | 3 fragmen memori, 2 ending, Pause & Ending screen | ⏳ |
-| W5 · 2–8 Des | Regression test, debugging, final release | ⏳ |
+| W1 · 4–10 Nov | Siapkan repositori, antarmuka modul, naskah awal, gerak pemain, dan collision. | ✅ Fondasi tersedia |
+| **W2 · 11–17 Nov** | **Sistem dialog, MemoryDevice dan jurnal, MainMenu dan GameScreen, integrasi, serta unit test. Milestone: 17 November 2026.** | ✅ **Prototype bisa dimainkan** |
+| W3 · 18–24 Nov | Adegan BANGUN, peta Kota Kepompong, combat, inventori, rumah No. 17, Amulet Kenang, dan akses Perpustakaan Arsip. | 🟡 Demo tersedia. Uji desktop menyusul. |
+| W4 · 25 Nov–1 Des | Perpustakaan Arsip dan teka-teki, Amulet Sesal, Sang Exitium dan Amulet Rindu, tiga ending, menu jeda, serta checkpoint fase Rindu. | ⏳ Direncanakan |
+| W5 · 2–8 Des | Uji ulang alur dan cabang ending, sesuaikan tingkat kesulitan, perbaiki bug, dan siapkan rilis internal. | ⏳ Direncanakan |
 
-**Isi prototype W2:** menu utama → intro → jalan-jalan dengan collision → bicara dengan Bu Sari (dialog bercabang) → antar paket ke Pak Darto → **The Remnant** aktif → pindai 3 benda (radio, foto, layangan) → kilas balik + entri jurnal → percakapan penutup dengan Bu Sari (akhir W2).
+**Isi prototype W2:** menu utama → intro dan eksplorasi dengan collision → dialog bercabang dengan Bu Sari → antar paket ke Pak Darto → The Remnant aktif → pindai radio, foto, dan layangan → lihat tiga gema memori dan catat di jurnal → percakapan penutup dengan Bu Sari.
 
----
+## Fitur dan status
 
-## Menjalankan
+| Bagian | Isi | Status paket ini |
+|---|---|---|
+| **Prolog** | Paket Pak Darto, dialog bercabang, tiga gema memori, jurnal, dan adegan BANGUN | Tersedia |
+| **Stage 1: Kota Kepompong** | Pisau dan pistol, patroli dan pengejaran, rumah No. 17, bersembunyi di lemari, ruang rahasia, rekaman TV, serta **Amulet Kenang** | Tersedia untuk demo W3 dengan peta dan sprite sementara |
+| **Stage 2: Perpustakaan Arsip** | Enam ruangan dan hub, empat teka-teki urutan, kunci, arsip Proyek EXIT, serta **Amulet Sesal** di brankas | W4. Demo W3 berakhir di akses menuju perpustakaan |
+| **Stage 3: Jantung Kalpataru** | Pertarungan tiga fase melawan Sang Exitium, **Amulet Rindu**, dan satu permintaan | W4 |
 
-Butuh **JDK 17 atau lebih baru** (tim memakai OpenJDK 21). Gradle tidak perlu di-install karena wrapper sudah disertakan.
+Setelah mendapat pisau, Zentra bisa membawa dua senjata tambahan. Senjata yang dibuang tertinggal di lantai dengan sisa pelurunya. The Remnant mencatat gema sebagai entri jurnal dan menyimpan **Kenang, Sesal, dan Rindu** sebagai tiga bagian kunci Kalpataru. Memindai tiga benda di prolog tidak mengisi slot amulet.
 
-```bash
-# Windows
-gradlew.bat lwjgl3:run
+<details>
+<summary>Spoiler naskah final dan tiga ending</summary>
 
-# macOS / Linux
-./gradlew lwjgl3:run
+Zentra menciptakan Sang Exitium dalam Proyek EXIT, yang merilis Brown Teddy sebagai aplikasi pemulihan ingatan. Pria bertopeng di TV adalah Zentra sendiri. Rekannya, Kruk, terperangkap di inti Sang Exitium dan menyuarakan panggilan terakhir melalui Bu Sari. Zentra yang dimainkan adalah Z-02, rekonstruksi yang dibuat Kruk dari sisa ingatan Zentra asli. Dari sinilah judul **The Last Remnant** berasal.
 
-# unit test semua modul
-./gradlew core:test
+Kalpataru adalah mesin berusia 100 abad yang mengabulkan satu permintaan dari kesadaran manusia setelah tiga amulet disatukan.
 
-# buat .jar yang bisa dijalankan langsung
-./gradlew lwjgl3:jar          # -> lwjgl3/build/libs/TheLastRemnant-0.2.0.jar
+| Ending | Hasil |
+|---|---|
+| **Bangun** | Semua orang bangun dengan ingatan utuh. Mereka tetap mengingat peran Zentra dalam bencana. Pilihan dialog `maaf` menambah adegan epilog. |
+| **Yang Terlupakan** | Semua orang bangun. Zentra dan Kruk hilang dari ingatan dunia. |
+| **Mimpi Abadi** | Ilusi menjadi permanen. Pilihan ini tersedia jika pemain mengaktifkan `ragu` saat berdialog dengan Sang Exitium. |
+
+</details>
+
+## Menjalankan game
+
+Siapkan **JDK 17 atau lebih baru**. Proyek memakai **LibGDX 1.13.1**, backend desktop **LWJGL3**, dan Gradle Wrapper. Unduhan dependensi dibutuhkan saat build pertama.
+
+```powershell
+# Windows PowerShell
+.\gradlew.bat lwjgl3:run
+.\gradlew.bat core:test
+.\gradlew.bat lwjgl3:jar
 ```
 
-Di IntelliJ IDEA: **File → Open →** pilih folder proyek ini (Gradle akan ter-import otomatis).  
-Menjalankan dari IDE: panel Gradle → `lwjgl3 → Tasks → application → run`.
-
-### Kontrol
+```bash
+# Linux / macOS
+bash gradlew lwjgl3:run
+bash gradlew core:test
+bash gradlew lwjgl3:jar
+```
 
 | Tombol | Aksi |
 |---|---|
-| W A S D / Panah | Berjalan |
-| E / Spasi / Enter | Bicara, periksa, lanjut dialog |
-| W/S lalu E, atau 1–4, atau klik | Pilih jawaban dialog |
-| J / Tab | Buka/tutup jurnal |
-| Esc | Kembali ke menu *(diganti Pause Menu di W4)* |
-| F11 | Layar penuh |
+| WASD / panah | Bergerak |
+| E / Enter | Bicara, memeriksa, memindai, mengambil barang atau melanjutkan dialog. E juga dapat menusuk Boneka dari belakang saat pisau aktif dan prompt muncul. |
+| W/S lalu E, 1–4, atau klik | Memilih jawaban dialog |
+| F / klik kiri | Serang mengikuti arah hadap / arah klik di Stage 1 |
+| R / Q / G | Isi ulang / ganti senjata / buang senjata aktif |
+| Tahan Spasi | Tahan napas saat bersembunyi di lemari |
+| J / Tab | Buka atau tutup jurnal |
+| Esc / F11 | Kembali ke menu saat eksplorasi / beralih layar penuh |
 
----
+## Desain OOP
 
-## Pembagian Tim & Lokasi Kode
+| Pattern | Penerapan |
+|---|---|
+| **Command** | `InputHandler` meneruskan aksi ke `Command`. Di `CombatState`, F, R, Q, dan G terhubung ke operasi combat dan inventori. |
+| **Observer** | `StoryManager` dan `Journal` memberi tahu HUD saat objektif atau entri berubah. `Health`, `Ammo`, dan `Inventory` memberi tahu HUD saat kondisi combat berubah. Catatan amulet dibuat sekali saat koleksi bertambah. |
+| **State** | `GameStateManager` mengatur eksplorasi, dialog, jurnal, transisi BANGUN, dan combat. `EnemyState` mengatur patroli, mengejar, menyerang, dan stun. |
 
-Setiap file Java punya komentar header berisi **bagian**, **penanggung jawab (PJ)**, dan **minggu** pengerjaannya.
+`Weapon` dan `Enemy` menyediakan kontrak bersama untuk kelas turunannya. `Inventory`, `Health`, `Ammo`, dan `MemoryDevice` menyediakan operasi untuk mengubah isi slot, HP, peluru, dan koleksi. `Interactable` dipakai oleh NPC, benda memori, senjata di lantai, lemari, dan objek Stage 1.
 
-| Anggota | Tanggung jawab | File utama (core/src/main/java/com/kelompok7/lastremnant/) |
+## Struktur proyek
+
+| Folder | Isi |
+|---|---|
+| `assets/data/` | Dialog, data tokoh, gema memori, dan catatan jurnal |
+| `assets/maps/` | Peta prolog dan tiga peta Stage 1 dalam format Tiled TMX |
+| `assets/sprites/` | Sprite sementara. Sheet karakter memakai frame 16 × 24 piksel, dengan empat arah. |
+| `core/src/main/java/com/kelompok7/lastremnant/` | Logika game, combat, stage, input, memori, state, dan UI |
+| `core/src/test/java/` | Pengujian logika, state, collision, dan integritas data cerita |
+| `lwjgl3/` | Launcher desktop |
+
+## Pembagian tugas W2–W3
+
+| Anggota | Revisi W2 | Implementasi W3 |
 |---|---|---|
-| **Iqbal** | Core gameplay & world | `entity/Entity`, `entity/Player`, `entity/Direction`, `entity/CharacterSprites`, `world/World`, `world/CollisionSystem`, `input/*` |
-| **Carlos** | Dialogue & story, aset | `dialogue/*`, `story/*`, `entity/NPC`, `assets/GameAssets`, `assets/data/dialogues.json`, `characters.json`, `tools/generate_placeholder_assets.py` |
-| **Insan** | Puzzle, memory, quest | `memory/*`, `entity/MemoryObject`, `assets/data/memories.json` |
-| **Setiawan** | UI & game flow | `LastRemnantGame`, `screens/MainMenu`, `screens/GameScreen`, `state/*`, `ui/*` |
-| Tim | Integrasi & setup | `util/Constants`, `entity/Interactable`, `entity/InteractionContext`, `lwjgl3/*`, file Gradle, `data/StoryDataIntegrityTest` |
+| **Iqbal Aulia Rachman** | Definisi peta per area dan pemeriksaan garis pandang | Peta Kota Kepompong, rumah No. 17, dan ruang rahasia. Weapon, ammo, pickup, serta inventori dua slot dan pisau. |
+| **Carlos Ricardo Dwi Saputra** | Nama Zentra dan petunjuk 16.40, huruf K, serta dialog Pak Darto | Dialog BANGUN dan TV, catatan Stage 1, serta sprite Zentra, Boneka, dan Kruk. |
+| **Azzam Insan Kamil** | Objektif prolog berdasarkan tiga gema yang wajib dipindai | Boneka Penjaga dan Pemburu, perilaku musuh, Health, serta koleksi amulet di MemoryDevice. |
+| **Budiman Setiawan** | Pemuatan area, sambungan setelah dialog, dan judul jurnal | CombatState, HUD combat, animasi BANGUN, serta integrasi transisi sampai pintu perpustakaan. |
 
----
-
-## Desain OOP (sesuai proposal)
-
-| Konsep | Di mana | Penjelasan singkat |
-|---|---|---|
-| **Abstraction** | `Entity` (abstract), `GameState`, `Interactable`, `Command` | Kontrak tanpa detail implementasi |
-| **Inheritance** | `Player`, `NPC`, `MemoryObject` → `Entity` | Mewarisi posisi, hitbox, dan urutan gambar |
-| **Encapsulation** | `StoryManager`, `Journal`, `MemoryDevice` | Status hanya berubah lewat method publik |
-| **Polymorphism** | `GameScreen.updateWorld()` / `render()` memanggil semua `Entity`; `ExplorationState` memanggil `Interactable.interact()` | Tanpa cek tipe atau `instanceof` |
-
-### Design Patterns
-
-| Pattern | Kelas | Alur |
-|---|---|---|
-| **Command** | `InputHandler`, `Command`, `MoveCommand`, `InteractCommand` | Tombol → Command → Player (kontrol bisa di-rebind) |
-| **State** | `GameStateManager`, `ExplorationState`, `DialogueState`, `JournalState` | Tumpukan state, tanpa rantai if-else di GameScreen |
-| **Observer** | `StoryManager` → `Hud`; `Journal` → `Hud` | Tujuan/jurnal berubah → HUD memperbarui dirinya *(W3: QuestManager → JournalUI, StoryManager)* |
-
-```
-LastRemnantGame (Game)
- ├─ MainMenu (Screen)
- └─ GameScreen (Screen, InteractionContext, DialogueActionHandler)
-     ├─ GameStateManager ── Exploration | Dialogue | Journal   (W3: Puzzle, W4: Pause, Ending)
-     ├─ World ── CollisionSystem
-     ├─ Entity[] ── Player | NPC | MemoryObject
-     ├─ InputHandler ── Command
-     ├─ StoryManager ──(observer)──► Hud
-     ├─ MemoryDevice ── Journal ──(observer)──► Hud
-     └─ UI: Hud, DialogueUI, JournalUI  (Scene2D)
-```
-
----
-
-## Struktur Folder
-
-```
-assets/
-  data/        dialogues.json, characters.json, memories.json   ← naskah & data (edit tanpa coding)
-  maps/        test_area.tmx + town_tiles.png                    ← buka dengan Tiled
-  sprites/ ui/ fonts/ sfx/                                       ← aset SEMENTARA (lihat di bawah)
-core/          semua logika game + unit test
-lwjgl3/        launcher desktop
-tools/         generate_placeholder_assets.py
-docs/          panduan W2, laporan mingguan, preview peta
-```
-
-### Aset sementara
-Semua pixel art, font, dan SFX saat ini dibuat oleh `tools/generate_placeholder_assets.py`, sesuai mitigasi risiko di proposal: *"gunakan aset sementara sampai aset final siap"*.  
-Untuk mengganti aset, **timpa file dengan nama dan ukuran grid yang sama** (karakter: 16×24 px, 4 kolom × 4 baris; tile: 16×16). Kode Java tidak perlu diubah.
-
-### Menambah konten tanpa menyentuh Java
-- **Dialog baru**: tambahkan di `assets/data/dialogues.json`.
-- **NPC baru**: tambahkan ke `characters.json` + objek `kind=npc` di layer `entities` di Tiled.
-- **Benda memori baru**: tambahkan ke `memories.json` + objek `kind=memory` di Tiled.
-- Jalankan `./gradlew core:test`. `StoryDataIntegrityTest` akan menangkap salah ketik pada id, nama pembicara, dan aksi.
-
----
-
-## Alur Git
-
-```
-main               ← selalu bisa dijalankan; hanya lewat Pull Request
- ├─ feat/iqbal-world
- ├─ feat/carlos-dialogue
- ├─ feat/insan-memory
- └─ feat/setiawan-ui
-```
-1. `git pull origin main` sebelum mulai kerja.
-2. Kerjakan di branch masing-masing, commit kecil-kecil: `feat(ui): tambah JournalUI`, `fix(collision): ...`.
-3. Jalankan `./gradlew core:test` sebelum push.
-4. Buka Pull Request ke `main`, minimal satu anggota lain me-review.
+Rujukan cerita dan pembagian pekerjaan: *The Last Remnant Naskah Cerita Lengkap* (hlm. 5–20) serta *Project Management Plan & Proposal* revisi.
