@@ -27,7 +27,7 @@ import com.kelompok7.lastremnant.util.Constants;
 public class GameAssets implements Disposable {
 
     private static final String[] SPRITES = {
-            "iwan", "sari", "darto", "shadow", "glow", "indicator",
+            "iwan", "zentra", "boneka", "kruk", "sari", "darto", "shadow", "glow", "indicator",
             "obj_kite", "obj_photo", "obj_radio", "obj_parcel", "remnant_icon"
     };
     private static final String[] UI = {

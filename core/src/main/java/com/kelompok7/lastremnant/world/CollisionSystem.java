@@ -9,6 +9,8 @@
 package com.kelompok7.lastremnant.world;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kelompok7.lastremnant.entity.Entity;
 
@@ -128,6 +130,16 @@ public class CollisionSystem {
         return inner.x >= outer.x && inner.y >= outer.y
                 && inner.x + inner.width <= outer.x + outer.width
                 && inner.y + inner.height <= outer.y + outer.height;
+    }
+
+    /** Cek jalur lurus untuk pandangan musuh dan tembakan di peta. */
+    public boolean hasClearLine(float x1, float y1, float x2, float y2) {
+        Vector2 start = new Vector2(x1, y1);
+        Vector2 end = new Vector2(x2, y2);
+        for (Rectangle solid : solids) {
+            if (Intersector.intersectSegmentRectangle(start, end, solid)) return false;
+        }
+        return true;
     }
 
     public Rectangle getBounds() {

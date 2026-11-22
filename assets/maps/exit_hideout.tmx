@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map version="1.10" orientation="orthogonal" renderorder="right-down" width="22" height="15" tilewidth="16" tileheight="16" infinite="0">
+ <properties>
+  <property name="displayName" value="Ruang Rahasia Proyek EXIT" />
+ </properties>
+ <tileset firstgid="1" name="town" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="35" columns="8">
+  <image source="town_tiles.png" width="144" height="90" />
+ </tileset>
+ <layer id="1" name="ground" width="22" height="15">
+  <data encoding="csv">
+16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+16,5,6,6,5,5,6,6,6,6,5,6,5,5,5,5,5,5,6,5,5,16,
+16,5,5,6,5,5,6,6,5,6,5,5,5,6,6,5,6,6,5,5,5,16,
+16,6,6,5,5,5,6,5,5,16,5,5,6,6,5,5,5,5,5,5,5,16,
+16,5,6,5,5,5,6,5,5,16,5,5,6,5,6,6,5,5,5,6,5,16,
+16,6,5,5,5,6,6,5,5,16,5,5,5,5,5,6,6,5,6,5,5,16,
+16,6,5,5,5,5,5,6,5,5,5,5,5,6,6,5,5,5,5,5,6,16,
+16,5,5,5,5,5,5,6,5,5,5,5,5,5,6,6,5,5,6,5,5,16,
+16,5,5,5,5,5,5,6,5,5,5,5,5,5,6,16,5,5,6,5,5,16,
+16,5,6,6,5,6,5,5,6,6,6,5,5,5,6,16,5,5,5,5,6,16,
+16,6,5,5,6,6,5,5,5,6,5,5,5,5,5,16,6,5,5,6,5,16,
+16,5,5,5,5,5,5,5,5,5,5,5,6,5,5,6,5,5,5,5,5,16,
+16,6,5,6,5,5,5,5,5,5,5,5,5,5,6,6,5,5,5,5,5,16,
+16,5,5,5,5,5,6,5,5,6,5,5,5,5,5,5,5,5,5,5,6,16,
+16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16
+</data>
+ </layer>
+ <objectgroup id="2" name="collision">
+  <object id="1" x="0" y="224" width="352" height="16" />
+  <object id="2" x="0" y="0" width="352" height="16" />
+  <object id="3" x="0" y="16" width="16" height="208" />
+  <object id="4" x="336" y="16" width="16" height="208" />
+  <object id="5" x="144" y="48" width="16" height="48" />
+  <object id="6" x="240" y="128" width="16" height="48" />
+ </objectgroup>
+ <objectgroup id="3" name="entities">
+  <object id="7" name="player" x="53" y="148" width="6" height="4">
+   <properties>
+    <property name="kind" value="player" />
+   </properties>
+  </object>
+  <object id="8" name="note" x="53" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="map_exit" />
+    <property name="label" value="Periksa papan foto" />
+   </properties>
+  </object>
+  <object id="9" name="note" x="85" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="kalpataru" />
+    <property name="label" value="Baca catatan Kalpataru" />
+   </properties>
+  </object>
+  <object id="10" name="note" x="117" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="exitium" />
+    <property name="label" value="Baca catatan Exitium" />
+   </properties>
+  </object>
+  <object id="11" name="note" x="181" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="puppets" />
+    <property name="label" value="Baca catatan Boneka" />
+   </properties>
+  </object>
+  <object id="12" name="note" x="213" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="photo_exit" />
+    <property name="label" value="Periksa foto Proyek EXIT" />
+   </properties>
+  </object>
+  <object id="13" name="note" x="245" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="mask_exit" />
+    <property name="label" value="Periksa topeng gas" />
+   </properties>
+  </object>
+  <object id="14" name="note" x="277" y="84" width="6" height="4">
+   <properties>
+    <property name="kind" value="note" />
+    <property name="note" value="calendar_exit" />
+    <property name="label" value="Periksa kalender" />
+   </properties>
+  </object>
+  <object id="15" name="tv" x="277" y="148" width="6" height="4">
+   <properties>
+    <property name="kind" value="tv" />
+   </properties>
+  </object>
+  <object id="16" name="kenang" x="277" y="116" width="6" height="4">
+   <properties>
+    <property name="kind" value="kenang" />
+   </properties>
+  </object>
+  <object id="17" name="library" x="325" y="148" width="6" height="4">
+   <properties>
+    <property name="kind" value="library" />
+   </properties>
+  </object>
+  <object id="18" name="weapon" x="101" y="164" width="6" height="4">
+   <properties>
+    <property name="kind" value="weapon" />
+    <property name="weapon" value="pistol" />
+    <property name="rounds" value="6" />
+   </properties>
+  </object>
+  <object id="19" name="weapon" x="133" y="164" width="6" height="4">
+   <properties>
+    <property name="kind" value="weapon" />
+    <property name="weapon" value="shotgun" />
+    <property name="rounds" value="4" />
+   </properties>
+  </object>
+  <object id="20" name="weapon" x="165" y="164" width="6" height="4">
+   <properties>
+    <property name="kind" value="weapon" />
+    <property name="weapon" value="flashlight" />
+    <property name="rounds" value="0" />
+   </properties>
+  </object>
+  <object id="21" name="ammo" x="197" y="164" width="6" height="4">
+   <properties>
+    <property name="kind" value="ammo" />
+   </properties>
+  </object>
+ </objectgroup>
+</map>

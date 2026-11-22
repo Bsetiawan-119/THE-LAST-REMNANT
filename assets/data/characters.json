@@ -1,11 +1,11 @@
 {
   "_info": "Data tokoh. PJ: Carlos (Dialogue & story). 'dialogues' dicek dari atas ke bawah; yang pertama lolos syarat 'if' dipakai.",
   "characters": [
-    { "id": "iwan",   "name": "Iwan",        "sprite": "iwan",  "voice": 1.0 },
+    { "id": "zentra", "name": "Zentra",        "sprite": "zentra",  "voice": 1.0 },
     {
       "id": "sari", "name": "Bu Sari", "sprite": "sari", "voice": 1.18,
       "dialogues": [
-        { "if": "w2_done",                                      "id": "sari_done" },
+        { "if": "prologue_photo_done",                                      "id": "sari_done" },
         { "if": "scanned_kite,scanned_photo,scanned_radio",     "id": "sari_photo" },
         { "if": "has_remnant",                                  "id": "sari_after" },
         { "if": "met_sari",                                     "id": "sari_repeat" },
@@ -27,6 +27,11 @@
     { "id": "echo_sari","name": "Sari",            "voice": 1.25, "style": "echo" },
     { "id": "echo_kid", "name": "Suara Anak",      "voice": 1.5,  "style": "echo" },
     { "id": "echo_dad", "name": "Suara Bapak",     "voice": 0.85, "style": "echo" },
-    { "id": "narrator", "name": "",                "voice": 0.9,  "style": "narration" }
+    { "id": "narrator", "name": "",                "voice": 0.9,  "style": "narration" },
+    {"id": "crowd", "name": "Warga", "voice": 0.85, "style": "echo"},
+    {"id": "wake_voice", "name": "???", "voice": 0.68, "style": "echo"},
+    {"id": "guard_voice", "name": "Boneka Penjaga", "portrait": "boneka", "voice": 0.56, "style": "echo"},
+    {"id": "masked_tv", "name": "Pria di TV", "voice": 0.74, "style": "echo"},
+    {"id": "kruk", "name": "Kruk", "portrait": "kruk", "voice": 0.82}
   ]
 }

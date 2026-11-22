@@ -13,7 +13,7 @@ import com.kelompok7.lastremnant.entity.Interactable;
 import com.kelompok7.lastremnant.screens.GameScreen;
 
 /**
- * Loop inti eksplorasi: input -> gerak -> cari benda/NPC di depan Iwan -> interaksi.
+ * Loop inti eksplorasi: input -> gerak -> cari benda/NPC di depan Zentra -> interaksi.
  * Interaksi bersifat polimorfik: state ini tidak tahu apakah targetnya NPC atau benda.
  */
 public class ExplorationState implements GameState {
@@ -58,9 +58,11 @@ public class ExplorationState implements GameState {
         Interactable target = screen.findInteractTarget();
         screen.setFocus(target);
 
-        if (screen.getPlayer().consumeInteractRequest() && target != null) {
-            target.interact(screen);   // bisa mendorong DialogueState ke atas tumpukan
-        }
+        if (screen.getPlayer().consumeInteractRequest()) interact(target);
+    }
+
+    protected void interact(Interactable target) {
+        if (target != null) target.interact(screen);
     }
 
     @Override
