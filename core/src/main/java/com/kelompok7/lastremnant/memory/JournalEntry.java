@@ -13,7 +13,8 @@ public final class JournalEntry {
     public enum Category {
         NOTE("CATATAN"),
         ECHO("GEMA"),
-        FRAGMENT("FRAGMEN");
+        FRAGMENT("FRAGMEN"),
+        AMULET("AMULET");
 
         public final String label;
 

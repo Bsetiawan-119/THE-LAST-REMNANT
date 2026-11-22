@@ -10,6 +10,8 @@
 // =============================================================================
 package com.kelompok7.lastremnant.memory;
 
+import java.util.EnumSet;
+import java.util.Locale;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.kelompok7.lastremnant.util.Constants;
@@ -24,6 +26,7 @@ public class MemoryDevice {
     private final Journal journal;
     private final ObjectSet<String> scanned = new ObjectSet<>();
     private final Array<MemoryFragment> fragments = new Array<>();
+    private final EnumSet<Amulet> amulets = EnumSet.noneOf(Amulet.class);
     private final int capacity;
     private boolean active;
 
@@ -100,6 +103,19 @@ public class MemoryDevice {
     public boolean isComplete() {
         return fragments.size >= capacity;
     }
+
+    /** Slot amulet terpisah dari gema dan model fragmen lama. */
+    public boolean addAmulet(Amulet amulet) {
+        if (!active || amulet == null || !amulets.add(amulet)) return false;
+        journal.addEntry(new JournalEntry("amulet_" + amulet.name().toLowerCase(Locale.ROOT),
+                JournalEntry.Category.AMULET, "Amulet " + amulet.title(), amulet.text()));
+        return true;
+    }
+
+    public boolean hasAmulet(Amulet amulet) { return amulets.contains(amulet); }
+    public int getAmuletCount() { return amulets.size(); }
+    public int getAmuletCapacity() { return Amulet.values().length; }
+    public boolean hasAllAmulets() { return amulets.size() == getAmuletCapacity(); }
 
     public Journal getJournal() {
         return journal;
