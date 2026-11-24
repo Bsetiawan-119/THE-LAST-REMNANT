@@ -3,7 +3,7 @@
 //  File    : InteractionContext.java
 //  Bagian  : Integrasi (interface antarmodul)
 //  PJ      : Tim  -  diimplementasi oleh GameScreen (Setiawan)
-//  Minggu  : W2
+//  Minggu  : W2, W3 (teleportPlayer untuk Warp - Iqbal)
 // =============================================================================
 package com.kelompok7.lastremnant.entity;
 
@@ -34,4 +34,13 @@ public interface InteractionContext {
 
     /** Diberi tahu setelah The Remnant berhasil membaca gema memori baru. */
     void onEchoScanned(MemoryEcho echo, JournalEntry entry);
+
+    /**
+     * Pindahkan pemain ke titik lain di peta yang sama (pintu rumah, tangga).
+     * Default: langsung pindah. GameScreen boleh menimpa untuk efek fade + kamera.
+     */
+    default void teleportPlayer(float x, float y, Direction facing) {
+        getPlayer().setPosition(x, y);
+        if (facing != null) getPlayer().setFacing(facing);
+    }
 }

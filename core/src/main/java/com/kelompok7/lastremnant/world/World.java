@@ -4,7 +4,8 @@
 //  Bagian  : Core gameplay & world (peta Tiled, layer, titik spawn)
 //  PJ      : Iqbal Aulia Rachman
 //  Minggu  : W2 = loader peta + area uji (maps/test_area.tmx)
-//            W3 = peta kota lengkap (cukup ganti file .tmx, kelas ini tetap)
+//            W3 = peta Stage 1 Kota Kepompong (maps/kota_kepompong.tmx),
+//                 ukuran objek spawn + cari spawn berdasarkan nama (Warp, Barrier)
 //  LibGDX  : TiledMap, TmxMapLoader, OrthogonalTiledMapRenderer
 // =============================================================================
 package com.kelompok7.lastremnant.world;
@@ -31,7 +32,9 @@ import com.badlogic.gdx.utils.IntArray;
  *   <li>Tile layer <b>ground</b>, <b>detail</b> : digambar DI BAWAH karakter.</li>
  *   <li>Tile layer <b>overhead</b>              : digambar DI ATAS karakter (tajuk pohon, lampu).</li>
  *   <li>Object layer <b>collision</b>           : kotak-kotak yang tidak bisa dilewati.</li>
- *   <li>Object layer <b>entities</b>            : titik spawn; properti {@code kind} = player | npc | memory.</li>
+ *   <li>Object layer <b>entities</b>            : titik spawn; properti {@code kind} = player | npc | memory
+ *       | weapon | dummy | warp | marker | barrier | inspect  (W3), serta penanda untuk modul lain:
+ *       enemy | hiding | checkpoint | exit.</li>
  * </ul>
  */
 public class World implements Disposable {
@@ -42,14 +45,28 @@ public class World implements Disposable {
         public final String name;
         public final float x;
         public final float y;
+        /** Ukuran kotak objek di Tiled (dipakai Warp/Barrier/InspectPoint). */
+        public final float width;
+        public final float height;
         public final MapProperties properties;
 
         Spawn(String kind, String name, float x, float y, MapProperties properties) {
+            this(kind, name, x, y, 0f, 0f, properties);
+        }
+
+        public Spawn(String kind, String name, float x, float y, float width, float height, MapProperties properties) {
             this.kind = kind;
             this.name = name;
             this.x = x;
             this.y = y;
+            this.width = width;
+            this.height = height;
             this.properties = properties;
+        }
+
+        /** Kotak objek dalam koordinat dunia (x,y = kiri-bawah). */
+        public Rectangle bounds(Rectangle out) {
+            return out.set(x - width / 2f, y, width, height);
         }
 
         public String prop(String key) {
@@ -110,7 +127,7 @@ public class World implements Disposable {
             if (!(o instanceof RectangleMapObject)) continue;
             Rectangle r = ((RectangleMapObject) o).getRectangle();
             String kind = o.getProperties().get("kind", "", String.class);
-            spawns.add(new Spawn(kind, o.getName(), r.x + r.width / 2f, r.y, o.getProperties()));
+            spawns.add(new Spawn(kind, o.getName(), r.x + r.width / 2f, r.y, r.width, r.height, o.getProperties()));
         }
     }
 
@@ -136,9 +153,25 @@ public class World implements Disposable {
         return spawns;
     }
 
+    // Catatan: pakai loop index, bukan for-each. Array libGDX melarang iterator bersarang,
+    // dan method ini dipanggil dari DALAM loop getSpawns() (Warp mencari objek tujuan).
     public Spawn findSpawn(String kind) {
-        for (Spawn s : spawns) {
-            if (s.kind.equals(kind)) return s;
+        for (int i = 0; i < spawns.size; i++) {
+            if (spawns.get(i).kind.equals(kind)) return spawns.get(i);
+        }
+        return null;
+    }
+
+    /** Cari spawn berdasarkan nama objek di Tiled (mis. target Warp "no17_dalam"). */
+    public Spawn findSpawnByName(String name) {
+        return findByName(spawns, name);
+    }
+
+    /** Versi statis (bisa diuji tanpa memuat peta). Aman dipanggil di dalam loop {@code spawns}. */
+    public static Spawn findByName(Array<Spawn> spawns, String name) {
+        if (name == null) return null;
+        for (int i = 0; i < spawns.size; i++) {
+            if (name.equals(spawns.get(i).name)) return spawns.get(i);
         }
         return null;
     }

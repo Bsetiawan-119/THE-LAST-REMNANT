@@ -28,13 +28,17 @@ public class GameAssets implements Disposable {
 
     private static final String[] SPRITES = {
             "iwan", "sari", "darto", "shadow", "glow", "indicator",
-            "obj_kite", "obj_photo", "obj_radio", "obj_parcel", "remnant_icon"
+            "obj_kite", "obj_photo", "obj_radio", "obj_parcel", "remnant_icon",
+            // W3 (Iqbal): senjata, peluru, boneka latihan, penghalang Stage 1
+            "weapon_knife", "weapon_pistol", "bullet", "dummy", "dummy_broken",
+            "secret_shelf", "secret_shelf_open", "rubble_gate"
     };
     private static final String[] UI = {
             "panel", "tag", "cursor", "slot_empty", "slot_full", "vignette", "pixel",
             "menu_sky", "menu_far", "menu_near"
     };
-    private static final String[] SFX = {"blip", "select", "confirm", "scan", "journal"};
+    private static final String[] SFX = {"blip", "select", "confirm", "scan", "journal",
+            "slash", "shot", "reload", "pickup", "empty"};   // W3: sfx combat (Iqbal)
     private static final String FONT = "fonts/font.fnt";
 
     private final AssetManager manager = new AssetManager();

@@ -18,6 +18,10 @@ dependencies {
 run {
     workingDir = rootProject.file('assets')
     ignoreExitValue = true
+    // W3 (Iqbal): buka peta lain langsung, mis.  ./gradlew lwjgl3:run "-Pmap=maps/kota_kepompong.tmx"  (PowerShell: tanda kutip wajib)
+    if (project.hasProperty('map')) {
+        systemProperty 'lastremnant.map', project.property('map')
+    }
     // macOS wajib menjalankan GLFW di thread pertama
     if (System.getProperty('os.name').toLowerCase().contains('mac')) {
         jvmArgs += ['-XstartOnFirstThread']

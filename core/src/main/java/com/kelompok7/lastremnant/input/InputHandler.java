@@ -4,6 +4,7 @@
 //  Bagian  : Core gameplay & world (input pemain)
 //  PJ      : Iqbal Aulia Rachman
 //  Minggu  : W1 (kerangka InputProcessor), W2 (pemetaan Command + rebinding)
+//            W3 (tombol combat: serang, isi ulang, ganti/ambil/buang senjata)
 //  Pattern : COMMAND (invoker)   |   LibGDX: InputProcessor
 //  Test    : core/src/test/.../input/InputHandlerTest.java
 // =============================================================================
@@ -33,7 +34,11 @@ public class InputHandler extends InputAdapter {
     private final Array<Command> pressedQueue = new Array<>();
     private boolean enabled = true;
 
-    /** Kontrol bawaan: WASD / panah untuk jalan, E / Space / Enter untuk interaksi. */
+    /**
+     * Kontrol bawaan: WASD / panah untuk jalan, E / Space / Enter untuk interaksi.
+     * Combat (W3): K serang, R isi ulang, Q senjata berikutnya, 1-3 pilih slot,
+     * F ambil senjata, G buang senjata.
+     */
     public static InputHandler withDefaultBindings() {
         InputHandler h = new InputHandler();
         h.bindHeld(Keys.W, MoveCommand.UP);
@@ -47,6 +52,15 @@ public class InputHandler extends InputAdapter {
         h.bindPress(Keys.E, InteractCommand.INSTANCE);
         h.bindPress(Keys.SPACE, InteractCommand.INSTANCE);
         h.bindPress(Keys.ENTER, InteractCommand.INSTANCE);
+        // combat
+        h.bindPress(Keys.K, AttackCommand.INSTANCE);
+        h.bindPress(Keys.R, ReloadCommand.INSTANCE);
+        h.bindPress(Keys.Q, SwitchWeaponCommand.NEXT_WEAPON);
+        h.bindPress(Keys.NUM_1, SwitchWeaponCommand.toSlot(0));
+        h.bindPress(Keys.NUM_2, SwitchWeaponCommand.toSlot(1));
+        h.bindPress(Keys.NUM_3, SwitchWeaponCommand.toSlot(2));
+        h.bindPress(Keys.F, PickupCommand.INSTANCE);
+        h.bindPress(Keys.G, DropCommand.INSTANCE);
         return h;
     }
 

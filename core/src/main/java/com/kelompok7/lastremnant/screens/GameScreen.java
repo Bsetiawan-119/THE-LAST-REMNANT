@@ -4,6 +4,8 @@
 //  Bagian  : UI & game flow (layar permainan utama + titik integrasi semua modul)
 //  PJ      : Budiman Setiawan
 //  Minggu  : W2  (integrasi bertahap: Iqbal + Carlos + Insan digabung di sini)
+//            W3  [Iqbal] WeaponSystem, senjata di lantai, Warp/Barrier/InspectPoint,
+//                        peta Stage 1 (GameScreen(game, mapPath)). Ditandai "[W3 Iqbal]".
 //  OOP     : POLYMORPHISM -> update()/render() semua Entity tanpa cek jenis
 //  Pattern : STATE (memakai GameStateManager), OBSERVER (mendaftarkan Hud & JournalUI)
 //  LibGDX  : Screen, OrthographicCamera, FitViewport, Stage, InputMultiplexer
@@ -29,6 +31,17 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kelompok7.lastremnant.LastRemnantGame;
 import com.kelompok7.lastremnant.assets.GameAssets;
+import com.kelompok7.lastremnant.combat.Attack;
+import com.kelompok7.lastremnant.combat.Damageable;
+import com.kelompok7.lastremnant.combat.Inventory;
+import com.kelompok7.lastremnant.combat.InventoryListener;
+import com.kelompok7.lastremnant.combat.PickupResult;
+import com.kelompok7.lastremnant.combat.RangedWeapon;
+import com.kelompok7.lastremnant.combat.TargetDummy;
+import com.kelompok7.lastremnant.combat.Weapon;
+import com.kelompok7.lastremnant.combat.WeaponPickup;
+import com.kelompok7.lastremnant.combat.WeaponSystem;
+import com.kelompok7.lastremnant.combat.WeaponSystemListener;
 import com.kelompok7.lastremnant.dialogue.Dialogue;
 import com.kelompok7.lastremnant.dialogue.DialogueAction;
 import com.kelompok7.lastremnant.dialogue.DialogueActionHandler;
@@ -59,7 +72,10 @@ import com.kelompok7.lastremnant.ui.Hud;
 import com.kelompok7.lastremnant.ui.JournalUI;
 import com.kelompok7.lastremnant.ui.UiStyles;
 import com.kelompok7.lastremnant.util.Constants;
+import com.kelompok7.lastremnant.world.Barrier;
 import com.kelompok7.lastremnant.world.CollisionSystem;
+import com.kelompok7.lastremnant.world.InspectPoint;
+import com.kelompok7.lastremnant.world.Warp;
 import com.kelompok7.lastremnant.world.World;
 
 /**
@@ -72,7 +88,11 @@ import com.kelompok7.lastremnant.world.World;
  * </pre>
  * GameScreen sendiri tidak berisi logika "sedang apa pemain"; itu tugas state aktif.
  */
-public class GameScreen extends ScreenAdapter implements InteractionContext, DialogueActionHandler {
+public class GameScreen extends ScreenAdapter implements InteractionContext, DialogueActionHandler,
+        WeaponSystemListener, InventoryListener {
+
+    /** Ganti peta awal tanpa ubah kode: ./gradlew lwjgl3:run "-Pmap=maps/kota_kepompong.tmx"  [W3 Iqbal] */
+    public static final String MAP_PROPERTY = "lastremnant.map";
 
     private final LastRemnantGame game;
     private final GameAssets assets;
@@ -96,6 +116,9 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     private final MemoryDatabase memories;
     private final Journal journal = new Journal();
     private final MemoryDevice device = new MemoryDevice(journal);
+    private final String mapPath;                                   // [W3 Iqbal]
+    private final WeaponSystem weapons;                             // [W3 Iqbal]
+    private boolean combatHintShown;
 
     // --- UI ---
     private final UiStyles styles;
@@ -107,6 +130,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     // --- isi dunia ---
     private final Array<Entity> entities = new Array<>();
     private final Array<Interactable> interactables = new Array<>();
+    private final Array<Interactable> candidates = new Array<>();   // [W3 Iqbal]
     private final TextureRegion indicator;
     private final Vector2 tmpVec = new Vector2();
     private Interactable focus;
@@ -114,7 +138,13 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     private boolean leaving;
 
     public GameScreen(LastRemnantGame game) {
+        this(game, System.getProperty(MAP_PROPERTY, Constants.TEST_MAP));
+    }
+
+    /** [W3 Iqbal] Dipakai alur BANGUN (Setiawan) untuk masuk ke Stage 1: Constants.STAGE1_MAP. */
+    public GameScreen(LastRemnantGame game, String mapPath) {
         this.game = game;
+        this.mapPath = mapPath;
         this.assets = game.getAssets();
         this.batch = game.getBatch();
 
@@ -124,13 +154,15 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         memories = MemoryDatabase.fromJson(assets.readData("memories.json"));
 
         // dunia & entity
-        world = new World(Constants.TEST_MAP, batch);
+        world = new World(mapPath, batch);
         collision = new CollisionSystem(world.getSolids(), world.getBounds());
         World.Spawn ps = world.findSpawn("player");
         player = new Player(ps != null ? ps.x : 48f, ps != null ? ps.y : 48f, collision);
         player.setSprites(assets.characterSprites("iwan"));
-        player.setFacing(Direction.RIGHT);
+        player.setFacing(ps != null ? Direction.parse(ps.prop("facing"), Direction.RIGHT) : Direction.RIGHT);
         entities.add(player);
+        weapons = new WeaponSystem(collision, assets::region);      // [W3 Iqbal]
+        weapons.spawnFromWorld(world);
         spawnEntities();
 
         // UI
@@ -150,6 +182,10 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         // Observer: HUD mendengarkan cerita & jurnal
         story.addListener(hud);
         journal.addListener(hud);
+        // [W3 Iqbal] sementara GameScreen yang mendengarkan combat (suara + toast).
+        // Setiawan: HUD darah/peluru/senjata cukup implements InventoryListener juga.
+        weapons.addListener(this);
+        player.getInventory().addListener(this);
     }
 
     /** Buat NPC & benda memori dari layer "entities" di peta. */
@@ -173,8 +209,43 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
                     interactables.add(obj);
                     break;
                 }
+                // ---------------------------------------------------- [W3 Iqbal]
+                case "dummy": {
+                    TargetDummy d = new TargetDummy(s.x, s.y, parseInt(s.prop("hp"), 3),
+                            assets.region("dummy"), assets.region("dummy_broken"));
+                    entities.add(d);
+                    collision.addEntity(d);
+                    weapons.addTarget(d);
+                    break;
+                }
+                case "warp": {
+                    Warp w = Warp.fromSpawn(s, world::findSpawnByName);
+                    entities.add(w);
+                    interactables.add(w);
+                    break;
+                }
+                case "barrier": {
+                    String closed = s.prop("sprite");
+                    String opened = s.prop("openSprite");
+                    Barrier b = new Barrier(s.bounds(new Rectangle()), story, s.prop("openFlag"),
+                            closed != null ? assets.region(closed) : null,
+                            opened != null ? assets.region(opened) : null);
+                    b.setOnOpened(() -> {
+                        assets.play("confirm", 0.6f, 0.7f);
+                        hud.showToast("Sesuatu bergeser...");
+                    });
+                    entities.add(b);
+                    collision.addEntity(b);
+                    break;
+                }
+                case "inspect": {
+                    InspectPoint ip = InspectPoint.fromSpawn(s, story);
+                    entities.add(ip);
+                    interactables.add(ip);
+                    break;
+                }
                 default:
-                    break;   // "player" sudah ditangani
+                    break;   // "player"/"weapon" sudah ditangani; enemy/hiding/checkpoint/exit = penanda modul lain
             }
         }
     }
@@ -197,8 +268,15 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         snapCamera();
         stateManager.set(new ExplorationState(this));
         curtain.addAction(Actions.sequence(Actions.alpha(1f), Actions.fadeOut(1.1f)));
-        hud.showLocation("DEPOK SELATAN", world.getDisplayName() + "  -  16.40");
-        startDialogue("intro", null);
+        if (Constants.TEST_MAP.equals(mapPath)) {
+            hud.showLocation("DEPOK SELATAN", world.getDisplayName() + "  -  16.40");
+            startDialogue("intro", null);
+        } else {
+            // [W3 Iqbal] Stage 1 dibuka langsung (uji peta). Alur BANGUN yang lengkap milik Setiawan/Carlos.
+            device.activate();
+            hud.showLocation("STAGE 1", world.getDisplayName());
+            story.setObjective("Ambil pistol di pos ronda, lalu cari rumah No. 17.");
+        }
     }
 
     @Override
@@ -219,10 +297,12 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         world.renderBelow(camera);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        weapons.renderFloor(batch);        // [W3 Iqbal] senjata di lantai selalu di bawah kaki
         entities.sort((a, b) -> Float.compare(b.getDepth(), a.getDepth()));
         for (Entity e : entities) {
-            e.render(batch);               // polimorfisme: Player, NPC, MemoryObject
+            e.render(batch);               // polimorfisme: Player, NPC, MemoryObject, Barrier, TargetDummy
         }
+        weapons.renderEffects(batch);      // [W3 Iqbal] peluru & sabetan
         batch.end();
         world.renderAbove(camera);
 
@@ -260,6 +340,8 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     public void dispose() {
         story.removeListener(hud);
         journal.removeListener(hud);
+        weapons.removeListener(this);                       // [W3 Iqbal]
+        player.getInventory().removeListener(this);
         world.dispose();
         uiStage.dispose();
     }
@@ -271,6 +353,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         for (Entity e : entities) {
             e.update(delta);
         }
+        weapons.update(delta, player);   // [W3 Iqbal] ambil/buang senjata, serangan, peluru
         updateCamera(delta);
     }
 
@@ -279,7 +362,10 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         Rectangle probe = player.getInteractionProbe();
         Interactable best = null;
         float bestDist = Float.MAX_VALUE;
-        for (Interactable it : interactables) {
+        candidates.clear();
+        candidates.addAll(interactables);
+        for (WeaponPickup wp : weapons.getFloorItems()) candidates.add(wp);   // [W3 Iqbal] senjata di lantai
+        for (Interactable it : candidates) {
             if (!it.canInteract()) continue;
             Rectangle b = it.getInteractBounds();
             if (!b.overlaps(probe)) continue;
@@ -383,6 +469,85 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         }
     }
 
+    /** [W3 Iqbal] Pintu rumah: layar gelap sebentar, pemain pindah, kamera langsung ikut. */
+    @Override
+    public void teleportPlayer(float x, float y, Direction facing) {
+        inputHandler.setEnabled(false);
+        player.stop();
+        assets.play("select", 0.5f, 0.7f);
+        curtain.clearActions();
+        curtain.addAction(Actions.sequence(Actions.fadeIn(0.18f), Actions.run(() -> {
+            player.setPosition(x, y);
+            if (facing != null) player.setFacing(facing);
+            snapCamera();
+            if (stateManager.isCurrent(ExplorationState.class)) inputHandler.setEnabled(true);
+        }), Actions.fadeOut(0.25f)));
+    }
+
+    // ================================================================== combat [W3 Iqbal]
+
+    @Override
+    public void onAttack(Attack attack) {
+        if (attack.getKind() == Attack.Kind.MELEE) {
+            assets.play("slash", 0.6f, MathUtils.random(0.9f, 1.1f));
+        } else {
+            assets.play("shot", 0.7f, MathUtils.random(0.95f, 1.05f));
+        }
+    }
+
+    @Override
+    public void onHit(Damageable target, Attack attack) {
+        assets.play("blip", 0.6f, target.isAlive() ? 0.7f : 0.45f);
+    }
+
+    @Override
+    public void onPickedUp(Weapon weapon, PickupResult result) {
+        assets.play("pickup", 0.8f, 1f);
+        if (result.getType() == PickupResult.Type.MERGED) {
+            hud.showToast("Peluru " + weapon.getDisplayName().toLowerCase() + " ditambahkan.");
+        } else if (!combatHintShown) {
+            combatHintShown = true;
+            hud.showToast("K serang  -  R isi ulang  -  Q / 1-3 ganti  -  G buang");
+        }
+    }
+
+    @Override
+    public void onDropped(Weapon weapon) {
+        assets.play("select", 0.5f, 0.6f);
+    }
+
+    @Override
+    public void onActionRejected(String reason) {
+        hud.showToast(reason);
+    }
+
+    @Override
+    public void onActiveWeaponChanged(Weapon weapon, int slot) {
+        String ammo = weapon.getAmmoText();
+        hud.showToast("[" + (slot + 1) + "] " + weapon.getDisplayName() + (ammo != null ? "  " + ammo : ""));
+    }
+
+    @Override
+    public void onAmmoChanged(Weapon weapon) {
+        if (weapon instanceof RangedWeapon) {
+            RangedWeapon r = (RangedWeapon) weapon;
+            if (r.isReloading()) {
+                assets.play("reload", 0.7f, 1f);
+            } else if (r.isEmpty() && r.getReserve() == 0) {
+                assets.play("empty", 0.7f, 1f);
+                hud.showToast(weapon.getDisplayName() + " kosong.");
+            }
+        }
+    }
+
+    private static int parseInt(String s, int fallback) {
+        try {
+            return s == null ? fallback : Integer.parseInt(s.trim());
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
+
     // ================================================================== DialogueActionHandler
 
     @Override
@@ -443,5 +608,14 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     public GameAssets getAssets() {
         return assets;
+    }
+
+    /** [W3 Iqbal] Untuk CombatState / HUD (Setiawan) dan Enemy (Insan: weapons.addTarget). */
+    public WeaponSystem getWeaponSystem() {
+        return weapons;
+    }
+
+    public Inventory getInventory() {
+        return player.getInventory();
     }
 }

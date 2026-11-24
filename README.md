@@ -17,7 +17,7 @@ Iwan, kurir di Depok Selatan, mengantar paket tanpa pengirim bertuliskan "Untuk 
 |---|---|---|
 | W1 · 4–10 Nov | Setup repo, interface, naskah, player & collision | ✅ |
 | **W2 · 11–17 Nov** | **Sistem dialog, MemoryDevice + jurnal, MainMenu + GameScreen, integrasi + unit test** | ✅ **prototype playable** |
-| W3 · 18–24 Nov | World/peta kota, Puzzle + QuestManager, konten NPC, DialogueUI/JournalUI final | ⏳ |
+| W3 · 18–24 Nov | World/peta kota, Puzzle + QuestManager, konten NPC, DialogueUI/JournalUI final | 🔄 Iqbal ✅ (Weapon + Inventory, peta Kota Kepompong + ruang rahasia) |
 | W4 · 25 Nov–1 Des | 3 fragmen memori, 2 ending, Pause & Ending screen | ⏳ |
 | W5 · 2–8 Des | Regression test, debugging, final release | ⏳ |
 
@@ -35,6 +35,9 @@ gradlew.bat lwjgl3:run
 
 # macOS / Linux
 ./gradlew lwjgl3:run
+
+# buka langsung peta Stage 1 (Kota Kepompong) untuk uji senjata & peta
+./gradlew lwjgl3:run "-Pmap=maps/kota_kepompong.tmx"   # Windows: .\gradlew.bat lwjgl3:run "-Pmap=maps/kota_kepompong.tmx"
 
 # unit test semua modul
 ./gradlew core:test
@@ -54,6 +57,11 @@ Menjalankan dari IDE: panel Gradle → `lwjgl3 → Tasks → application → run
 | E / Spasi / Enter | Bicara, periksa, lanjut dialog |
 | W/S lalu E, atau 1–4, atau klik | Pilih jawaban dialog |
 | J / Tab | Buka/tutup jurnal |
+| K | Serang (pisau = sabet, pistol = tembak) |
+| R | Isi ulang pistol |
+| Q / 1–3 | Senjata berikutnya / pilih slot (1 = pisau) |
+| E atau F | Ambil senjata di lantai |
+| G | Buang senjata di tangan (pisau tidak bisa) |
 | Esc | Kembali ke menu *(diganti Pause Menu di W4)* |
 | F11 | Layar penuh |
 
@@ -65,7 +73,7 @@ Setiap file Java punya komentar header berisi **bagian**, **penanggung jawab (PJ
 
 | Anggota | Tanggung jawab | File utama (core/src/main/java/com/kelompok7/lastremnant/) |
 |---|---|---|
-| **Iqbal** | Core gameplay & world | `entity/Entity`, `entity/Player`, `entity/Direction`, `entity/CharacterSprites`, `world/World`, `world/CollisionSystem`, `input/*` |
+| **Iqbal** | Core gameplay & world, senjata | `entity/Entity`, `entity/Player`, `entity/Direction`, `entity/CharacterSprites`, `world/*` (World, CollisionSystem, Warp, Barrier, InspectPoint), `input/*`, `combat/*`, `maps/kota_kepompong.tmx`, `tools/generate_stage1_assets.py` |
 | **Carlos** | Dialogue & story, aset | `dialogue/*`, `story/*`, `entity/NPC`, `assets/GameAssets`, `assets/data/dialogues.json`, `characters.json`, `tools/generate_placeholder_assets.py` |
 | **Insan** | Puzzle, memory, quest | `memory/*`, `entity/MemoryObject`, `assets/data/memories.json` |
 | **Setiawan** | UI & game flow | `LastRemnantGame`, `screens/MainMenu`, `screens/GameScreen`, `state/*`, `ui/*` |
@@ -78,17 +86,17 @@ Setiap file Java punya komentar header berisi **bagian**, **penanggung jawab (PJ
 | Konsep | Di mana | Penjelasan singkat |
 |---|---|---|
 | **Abstraction** | `Entity` (abstract), `GameState`, `Interactable`, `Command` | Kontrak tanpa detail implementasi |
-| **Inheritance** | `Player`, `NPC`, `MemoryObject` → `Entity` | Mewarisi posisi, hitbox, dan urutan gambar |
-| **Encapsulation** | `StoryManager`, `Journal`, `MemoryDevice` | Status hanya berubah lewat method publik |
+| **Inheritance** | `Player`, `NPC`, `MemoryObject`, `Projectile`, `WeaponPickup`, `Barrier`, `Warp` → `Entity`; `Weapon` → `MeleeWeapon`/`RangedWeapon` → `Knife`/`Pistol` | Mewarisi posisi, hitbox, dan urutan gambar; alur serangan sama (Template Method) |
+| **Encapsulation** | `StoryManager`, `Journal`, `MemoryDevice`, `Inventory`, `RangedWeapon` | Status hanya berubah lewat method publik (slot & peluru tervalidasi) |
 | **Polymorphism** | `GameScreen.updateWorld()` / `render()` memanggil semua `Entity`; `ExplorationState` memanggil `Interactable.interact()` | Tanpa cek tipe atau `instanceof` |
 
 ### Design Patterns
 
 | Pattern | Kelas | Alur |
 |---|---|---|
-| **Command** | `InputHandler`, `Command`, `MoveCommand`, `InteractCommand` | Tombol → Command → Player (kontrol bisa di-rebind) |
+| **Command** | `InputHandler`, `Command`, `MoveCommand`, `InteractCommand`, `AttackCommand`, `ReloadCommand`, `SwitchWeaponCommand`, `PickupCommand`, `DropCommand` | Tombol → Command → Player (kontrol bisa di-rebind) |
 | **State** | `GameStateManager`, `ExplorationState`, `DialogueState`, `JournalState` | Tumpukan state, tanpa rantai if-else di GameScreen |
-| **Observer** | `StoryManager` → `Hud`; `Journal` → `Hud` | Tujuan/jurnal berubah → HUD memperbarui dirinya *(W3: QuestManager → JournalUI, StoryManager)* |
+| **Observer** | `StoryManager` → `Hud`; `Journal` → `Hud`; `Inventory` → `InventoryListener`; `WeaponSystem` → `WeaponSystemListener` | Tujuan/jurnal berubah → HUD memperbarui dirinya *(W3: QuestManager → JournalUI, StoryManager)* |
 
 ```
 LastRemnantGame (Game)
@@ -121,6 +129,27 @@ docs/          panduan W2, laporan mingguan, preview peta
 ### Aset sementara
 Semua pixel art, font, dan SFX saat ini dibuat oleh `tools/generate_placeholder_assets.py`, sesuai mitigasi risiko di proposal: *"gunakan aset sementara sampai aset final siap"*.  
 Untuk mengganti aset, **timpa file dengan nama dan ukuran grid yang sama** (karakter: 16×24 px, 4 kolom × 4 baris; tile: 16×16). Kode Java tidak perlu diubah.
+
+### Peta Stage 1: Kota Kepompong (W3, Iqbal)
+`assets/maps/kota_kepompong.tmx` (80×44 tile) dibuat oleh `tools/generate_stage1_assets.py` dan boleh diedit di Tiled.
+Pratinjau: `docs/preview_kota_kepompong.png`. Alur: kepompong Z-02 → pistol di pos ronda → rumah No. 17 →
+pindai radio (flag `scanned_radio`) → rak bergeser → ruang rahasia (TV, catatan) → flag `tv_watched` → puing di ujung gang terbuka.
+`Stage1MapIntegrityTest` memastikan alur ini tidak buntu.
+
+Jenis objek baru di layer `entities` (properti `kind`):
+
+| kind | Properti | Dipakai oleh |
+|---|---|---|
+| `weapon` | `weaponId` (pistol), `ammo`, `reserve` | WeaponSystem (Iqbal) |
+| `dummy` | `hp` | Boneka latihan sementara (Iqbal) |
+| `warp` | `target` (nama objek tujuan), `label`, `facing` | Pintu luar ↔ dalam (Iqbal) |
+| `marker` | `facing` | Tujuan warp |
+| `barrier` | `openFlag`, `sprite`, `openSprite` | Rak rahasia, puing gang (Iqbal) |
+| `inspect` | `dialogueId`, `label`, `setFlag`, `requiresFlag` | TV, catatan, foto (isi dialog: Carlos) |
+| `enemy` | `enemyId` | **Penanda** untuk Enemy (Insan) |
+| `hiding` | – | **Penanda** untuk HidingSpot |
+| `checkpoint` | `id` | **Penanda** untuk checkpoint (Setiawan) |
+| `exit` | `nextMap`, `label` | **Penanda** pindah ke Stage 2 (Setiawan, W4) |
 
 ### Menambah konten tanpa menyentuh Java
 - **Dialog baru**: tambahkan di `assets/data/dialogues.json`.

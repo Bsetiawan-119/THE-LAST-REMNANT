@@ -49,6 +49,24 @@ public final class Constants {
     // --- dialog ---
     public static final float TYPE_SPEED = 48f;            // karakter per detik
 
+    // --- senjata & inventori (Iqbal, W3) ---
+    /** Slot senjata selain pisau. Pisau selalu ada di slot 0 dan tidak bisa dibuang. */
+    public static final int WEAPON_SLOTS = 2;
+    public static final int KNIFE_DAMAGE = 1;
+    public static final float KNIFE_COOLDOWN = 0.35f;
+    public static final float KNIFE_REACH = 14f;
+    public static final int PISTOL_DAMAGE = 2;
+    public static final float PISTOL_COOLDOWN = 0.45f;
+    public static final int PISTOL_MAGAZINE = 6;          // proposal Stage 1: pistol berisi 6 peluru
+    public static final float PISTOL_RELOAD_TIME = 1.2f;
+    public static final float BULLET_SPEED = 260f;        // pixel per detik
+    public static final float BULLET_RANGE = 220f;
+    /** Jarak maksimum dari kaki pemain ke senjata di lantai agar bisa diambil. */
+    public static final float PICKUP_REACH = 14f;
+
+    // --- peta Stage 1 (Iqbal, W3) ---
+    public static final String STAGE1_MAP = "maps/kota_kepompong.tmx";
+
     /** Delta waktu maksimum per frame, mencegah "teleport" saat game lag. */
     public static final float MAX_DELTA = 1f / 30f;
 }
