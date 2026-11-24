@@ -18,7 +18,7 @@ import com.kelompok7.lastremnant.story.CharacterInfo;
 import com.kelompok7.lastremnant.util.Constants;
 
 /**
- * NPC berdiri di tempat, sesekali menoleh, dan menghadap Iwan saat diajak bicara.
+ * NPC berdiri di tempat, sesekali menoleh, dan menghadap zentra saat diajak bicara.
  * Dialog yang dipakai dipilih dari aturan di {@link CharacterInfo} sesuai flag cerita,
  * jadi isi percakapan berubah seiring progres tanpa if-else di kode.
  */

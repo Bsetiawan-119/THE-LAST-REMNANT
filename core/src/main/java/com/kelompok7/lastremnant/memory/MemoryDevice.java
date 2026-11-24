@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.kelompok7.lastremnant.util.Constants;
 
 /**
- * Perangkat yang ditemukan Iwan di dalam paket. Setelah aktif, bisa membaca
+ * Perangkat yang ditemukan zentra di dalam paket. Setelah aktif, bisa membaca
  * jejak memori dari benda (gema) dan menyimpan fragmen memori.
  * Semua hasil bacaan otomatis masuk ke {@link Journal}.
  */

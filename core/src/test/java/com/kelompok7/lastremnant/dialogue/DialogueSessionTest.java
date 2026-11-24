@@ -93,7 +93,7 @@ public class DialogueSessionTest {
 
     @Test
     public void dialogLinearSelesaiSetelahBarisTerakhir() {
-        DialogueSession s = new DialogueSession(Dialogue.linear("x", "iwan", "satu", "dua"), null, null);
+        DialogueSession s = new DialogueSession(Dialogue.linear("x", "zentra", "satu", "dua"), null, null);
         s.start();
         assertEquals("satu", s.getCurrentNode().getText());
         s.advance();

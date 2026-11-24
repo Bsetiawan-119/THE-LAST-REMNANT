@@ -484,8 +484,8 @@ def draw_char(img, ox, oy, d, f, look):
 
 
 LOOKS = {
-    # Iwan - kurir: topi & jaket teal, ransel paket
-    "iwan": dict(hair=(48, 36, 32), cap=(40, 132, 128), shirt=(46, 146, 140), collar=(30, 104, 100),
+    # zentra - kurir: topi & jaket teal, ransel paket
+    "zentra": dict(hair=(48, 36, 32), cap=(40, 132, 128), shirt=(46, 146, 140), collar=(30, 104, 100),
                  stripe=(240, 168, 64), pants=(52, 56, 74), shoes=(30, 30, 36), backpack=(196, 140, 72)),
     # Bu Sari - pemilik warung: kerudung marun, baju kunyit
     "sari": dict(hair=(40, 30, 30), hijab=(128, 46, 58), shirt=(214, 160, 64), pants=(96, 66, 50),
@@ -1019,7 +1019,7 @@ def main():
     print("Membuat aset sementara di", os.path.abspath(ROOT))
     w, h = build_tileset()
     print(f"  tileset      : {len(tile_painters)} tile")
-    build_characters(); print("  karakter     : iwan, sari, darto")
+    build_characters(); print("  karakter     : zentra, sari, darto")
     build_misc(); build_ui(); print("  objek & UI   : ok")
     build_menu_bg(); print("  latar menu   : ok")
     build_font(13, "font"); print("  font bitmap  : ok")

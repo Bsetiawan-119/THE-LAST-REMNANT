@@ -14,7 +14,7 @@ public class DialogueRepositoryTest {
     @Test
     public void memuatDialogSederhana() {
         DialogueRepository repo = DialogueRepository.fromJson(
-                "{ dialogues: [ { id: hi, nodes: [ { id: a, speaker: iwan, text: Halo } ] } ] }");
+                "{ dialogues: [ { id: hi, nodes: [ { id: a, speaker: zentra, text: Halo } ] } ] }");
         assertTrue(repo.has("hi"));
         assertEquals("a", repo.get("hi").getStartId());   // start default = node pertama
         assertEquals("narrator", DialogueRepository.fromJson(

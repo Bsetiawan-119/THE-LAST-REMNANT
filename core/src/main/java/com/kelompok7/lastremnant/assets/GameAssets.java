@@ -27,11 +27,13 @@ import com.kelompok7.lastremnant.util.Constants;
 public class GameAssets implements Disposable {
 
     private static final String[] SPRITES = {
-            "iwan", "sari", "darto", "shadow", "glow", "indicator",
+            "zentra", "sari", "darto", "shadow", "glow", "indicator",
             "obj_kite", "obj_photo", "obj_radio", "obj_parcel", "remnant_icon",
             // W3 (Iqbal): senjata, peluru, boneka latihan, penghalang Stage 1
             "weapon_knife", "weapon_pistol", "bullet", "dummy", "dummy_broken",
-            "secret_shelf", "secret_shelf_open", "rubble_gate"
+            "secret_shelf", "secret_shelf_open", "rubble_gate",
+            // W3 (Carlos): Zentra, Boneka, Kruk
+            "zentra", "zentra_awake", "zentra_mask", "boneka", "boneka_hit", "kruk"
     };
     private static final String[] UI = {
             "panel", "tag", "cursor", "slot_empty", "slot_full", "vignette", "pixel",

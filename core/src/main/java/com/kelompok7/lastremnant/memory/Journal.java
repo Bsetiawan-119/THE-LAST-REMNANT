@@ -1,7 +1,7 @@
 // =============================================================================
 //  THE LAST REMNANT · Kelompok 7
 //  File    : Journal.java
-//  Bagian  : Puzzle, memory, quest (jurnal Iwan: catatan, gema, fragmen)
+//  Bagian  : Puzzle, memory, quest (jurnal zentra: catatan, gema, fragmen)
 //  PJ      : Azzam Insan Kamil
 //  Minggu  : W2
 //  OOP     : ENCAPSULATION (daftar entri hanya bisa dibaca, ditambah lewat addEntry)
@@ -12,7 +12,7 @@ package com.kelompok7.lastremnant.memory;
 
 import com.badlogic.gdx.utils.Array;
 
-/** Kumpulan catatan Iwan, urut sesuai waktu ditemukan. */
+/** Kumpulan catatan zentra, urut sesuai waktu ditemukan. */
 public class Journal {
 
     private final Array<JournalEntry> entries = new Array<>();

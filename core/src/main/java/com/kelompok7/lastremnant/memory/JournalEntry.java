@@ -7,7 +7,7 @@
 // =============================================================================
 package com.kelompok7.lastremnant.memory;
 
-/** Satu halaman jurnal Iwan. */
+/** Satu halaman jurnal zentra. */
 public final class JournalEntry {
 
     public enum Category {

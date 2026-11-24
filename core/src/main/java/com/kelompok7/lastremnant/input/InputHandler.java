@@ -126,7 +126,7 @@ public class InputHandler extends InputAdapter {
 
     /**
      * Matikan saat dialog / jurnal terbuka. Tombol yang masih ditahan tetap dicatat
-     * supaya saat kembali ke eksplorasi Iwan langsung jalan lagi tanpa harus tekan ulang.
+     * supaya saat kembali ke eksplorasi zentra langsung jalan lagi tanpa harus tekan ulang.
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

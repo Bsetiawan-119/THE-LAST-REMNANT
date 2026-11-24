@@ -1,7 +1,11 @@
 {
   "_info": "Data tokoh. PJ: Carlos (Dialogue & story). 'dialogues' dicek dari atas ke bawah; yang pertama lolos syarat 'if' dipakai.",
   "characters": [
-    { "id": "iwan",   "name": "Iwan",        "sprite": "iwan",  "voice": 1.0 },
+    { "id": "zentra",        "name": "Zentra",          "sprite": "zentra",      "voice": 1.0 },
+    { "id": "zentra_mask", "name": "Pria Bertopeng",  "sprite": "zentra_mask", "voice": 0.92 },
+    { "id": "kruk",        "name": "Kruk",            "sprite": "kruk",        "voice": 1.32 },
+    { "id": "warga",       "name": "Warga",           "voice": 0.88,           "style": "echo" },
+    { "id": "kalpataru",   "name": "Kalpataru",       "voice": 0.65,           "style": "system" },
     {
       "id": "sari", "name": "Bu Sari", "sprite": "sari", "voice": 1.18,
       "dialogues": [
@@ -20,13 +24,13 @@
         {                         "id": "darto_intro" }
       ]
     },
-    { "id": "remnant",  "name": "The Remnant",     "portrait": "remnant_icon", "voice": 1.7,  "style": "system" },
-    { "id": "echo_f",   "name": "Suara Perempuan", "voice": 1.25, "style": "echo" },
-    { "id": "echo_m",   "name": "Suara Laki-laki", "voice": 0.9,  "style": "echo" },
-    { "id": "echo_hadi","name": "Hadi",            "voice": 0.95, "style": "echo" },
-    { "id": "echo_sari","name": "Sari",            "voice": 1.25, "style": "echo" },
-    { "id": "echo_kid", "name": "Suara Anak",      "voice": 1.5,  "style": "echo" },
-    { "id": "echo_dad", "name": "Suara Bapak",     "voice": 0.85, "style": "echo" },
-    { "id": "narrator", "name": "",                "voice": 0.9,  "style": "narration" }
+    { "id": "remnant",   "name": "The Remnant",     "portrait": "remnant_icon", "voice": 1.7,  "style": "system" },
+    { "id": "echo_f",    "name": "Suara Perempuan", "voice": 1.25, "style": "echo" },
+    { "id": "echo_m",    "name": "Suara Laki-laki", "voice": 0.9,  "style": "echo" },
+    { "id": "echo_hadi", "name": "Hadi",            "voice": 0.95, "style": "echo" },
+    { "id": "echo_sari", "name": "Sari",            "voice": 1.25, "style": "echo" },
+    { "id": "echo_kid",  "name": "Suara Anak",      "voice": 1.5,  "style": "echo" },
+    { "id": "echo_dad",  "name": "Suara Bapak",     "voice": 0.85, "style": "echo" },
+    { "id": "narrator",  "name": "",                "voice": 0.9,  "style": "narration" }
   ]
 }

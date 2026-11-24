@@ -27,10 +27,10 @@ import com.kelompok7.lastremnant.memory.JournalEntry;
 import com.kelompok7.lastremnant.memory.MemoryDevice;
 
 /**
- * Jurnal Iwan.
+ * Jurnal zentra.
  * <pre>
  * +--------------------------------------------------------------+
- * | JURNAL IWAN                               <> <> <>  Fragmen 0/3|
+ * | JURNAL zentra                               <> <> <>  Fragmen 0/3|
  * |--------------------------------------------------------------|
  * | > Paket tanpa pengirim  |  CATATAN                            |
  * |   The Remnant           |  Paket tanpa pengirim               |
@@ -88,7 +88,7 @@ public class JournalUI {
         window.pad(14, 16, 12, 16);
 
         Table header = new Table();
-        header.add(new Label("JURNAL IWAN", st.warm)).left().expandX();
+        header.add(new Label("JURNAL ZENTRA", st.warm)).left().expandX();
         header.add(slotRow).right();
         window.add(header).growX().colspan(3).row();
         window.add(new Image(st.solid(new Color(1f, 1f, 1f, 0.15f)))).height(1).growX().colspan(3).padTop(8).padBottom(8).row();

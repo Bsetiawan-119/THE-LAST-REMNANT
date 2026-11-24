@@ -21,7 +21,7 @@ import com.kelompok7.lastremnant.memory.MemoryEcho;
 /**
  * Benda biasa (radio, foto, layangan) yang menyimpan gema memori.
  * <ul>
- *   <li>Tanpa The Remnant  : Iwan hanya bisa memeriksa (deskripsi singkat).</li>
+ *   <li>Tanpa The Remnant  : zentra hanya bisa memeriksa (deskripsi singkat).</li>
  *   <li>Dengan The Remnant : benda berpendar; dipindai -> kilas balik + entri jurnal.</li>
  * </ul>
  */

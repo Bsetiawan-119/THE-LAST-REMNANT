@@ -14,7 +14,7 @@ import com.kelompok7.lastremnant.screens.GameScreen;
 import com.kelompok7.lastremnant.ui.DialogueUI;
 
 /**
- * Selama dialog: Iwan tidak bisa berjalan, dunia tetap hidup (NPC & partikel jalan),
+ * Selama dialog: zentra tidak bisa berjalan, dunia tetap hidup (NPC & partikel jalan),
  * semua tombol diarahkan ke DialogueUI. Saat sesi selesai, state ini mem-pop dirinya.
  */
 public class DialogueState implements GameState {

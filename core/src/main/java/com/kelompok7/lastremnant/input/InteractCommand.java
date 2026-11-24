@@ -10,7 +10,7 @@ package com.kelompok7.lastremnant.input;
 
 import com.kelompok7.lastremnant.entity.Player;
 
-/** Bicara / periksa / pindai benda di depan Iwan. Dieksekusi sekali per tekan. */
+/** Bicara / periksa / pindai benda di depan zentra. Dieksekusi sekali per tekan. */
 public final class InteractCommand implements Command {
 
     public static final InteractCommand INSTANCE = new InteractCommand();

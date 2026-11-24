@@ -5,7 +5,7 @@
 Game naratif-puzzle 2D pixel art berbasis **Java 17+ / LibGDX 1.13.1**.  
 Final Project Pemrograman Berorientasi Objek, **Kelompok 7**.
 
-Iwan, kurir di Depok Selatan, mengantar paket tanpa pengirim bertuliskan "Untuk yang masih ingat." Isinya **The Remnant**, perangkat yang bisa membaca memori dari benda-benda. Dari situ Iwan sadar bahwa sistem bernama **Brown Teddy** memang menghapus kenangan yang menyakitkan, tetapi ikut menghapus bagian penting dari identitas manusia.
+zentra, kurir di Depok Selatan, mengantar paket tanpa pengirim bertuliskan "Untuk yang masih ingat." Isinya **The Remnant**, perangkat yang bisa membaca memori dari benda-benda. Dari situ zentra sadar bahwa sistem bernama **Brown Teddy** memang menghapus kenangan yang menyakitkan, tetapi ikut menghapus bagian penting dari identitas manusia.
 
 ![Area uji W2](docs/preview_test_area.png)
 
@@ -17,7 +17,7 @@ Iwan, kurir di Depok Selatan, mengantar paket tanpa pengirim bertuliskan "Untuk 
 |---|---|---|
 | W1 · 4–10 Nov | Setup repo, interface, naskah, player & collision | ✅ |
 | **W2 · 11–17 Nov** | **Sistem dialog, MemoryDevice + jurnal, MainMenu + GameScreen, integrasi + unit test** | ✅ **prototype playable** |
-| W3 · 18–24 Nov | World/peta kota, Puzzle + QuestManager, konten NPC, DialogueUI/JournalUI final | 🔄 Iqbal ✅ (Weapon + Inventory, peta Kota Kepompong + ruang rahasia) |
+| W3 · 18–24 Nov | World/peta kota, Puzzle + QuestManager, konten NPC, DialogueUI/JournalUI final | Iwan, Insan🔄 Iqbal (Weapon + Inventory, peta Kota Kepompong + ruang rahasia) ✅ Carlos (Naskah + dialog Stage 1, adegan BANGUN, sprite/portrait Zentra, Boneka & Kruk) ✅ |
 | W4 · 25 Nov–1 Des | 3 fragmen memori, 2 ending, Pause & Ending screen | ⏳ |
 | W5 · 2–8 Des | Regression test, debugging, final release | ⏳ |
 

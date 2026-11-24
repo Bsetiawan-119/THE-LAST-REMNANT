@@ -158,7 +158,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         collision = new CollisionSystem(world.getSolids(), world.getBounds());
         World.Spawn ps = world.findSpawn("player");
         player = new Player(ps != null ? ps.x : 48f, ps != null ? ps.y : 48f, collision);
-        player.setSprites(assets.characterSprites("iwan"));
+        player.setSprites(assets.characterSprites("zentra"));
         player.setFacing(ps != null ? Direction.parse(ps.prop("facing"), Direction.RIGHT) : Direction.RIGHT);
         entities.add(player);
         weapons = new WeaponSystem(collision, assets::region);      // [W3 Iqbal]
@@ -357,7 +357,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         updateCamera(delta);
     }
 
-    /** Interactable terdekat yang bersinggungan dengan probe di depan Iwan. */
+    /** Interactable terdekat yang bersinggungan dengan probe di depan zentra. */
     public Interactable findInteractTarget() {
         Rectangle probe = player.getInteractionProbe();
         Interactable best = null;
@@ -452,7 +452,25 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     @Override
     public void startDialogue(Dialogue dialogue, Runnable onFinished) {
         DialogueSession session = new DialogueSession(dialogue, story, this);
-        stateManager.push(new DialogueState(this, session, onFinished));
+        Runnable next = () -> {
+            if (onFinished != null) onFinished.run();
+            if ("sari_photo".equals(dialogue.getId()) && story.hasFlag("bangun_done")) {
+                enterStage1();
+            }
+        };
+        stateManager.push(new DialogueState(this, session, next));
+    }
+
+    public void enterStage1() {
+        if (leaving) return;
+        leaving = true;
+        inputHandler.setEnabled(false);
+        assets.play("scan", 0.8f, 0.75f);
+        curtain.clearActions();
+        curtain.addAction(Actions.sequence(
+                Actions.fadeIn(0.8f),
+                Actions.run(() -> game.changeScreen(new GameScreen(game, Constants.STAGE1_MAP)))
+        ));
     }
 
     @Override

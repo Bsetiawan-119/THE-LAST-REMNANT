@@ -1,7 +1,7 @@
 // =============================================================================
 //  THE LAST REMNANT · Kelompok 7
 //  File    : Player.java
-//  Bagian  : Core gameplay & world (karakter utama: Iwan)
+//  Bagian  : Core gameplay & world (karakter utama: zentra)
 //  PJ      : Iqbal Aulia Rachman
 //  Minggu  : W1 (struktur), W2 (movement + collision + animasi + probe interaksi)
 //            W3 (Inventory senjata + permintaan serang/isi ulang/ganti/ambil/buang)
@@ -22,7 +22,7 @@ import com.kelompok7.lastremnant.util.Constants;
 import com.kelompok7.lastremnant.world.CollisionSystem;
 
 /**
- * Iwan, kurir di Depok Selatan.
+ * zentra, kurir di Depok Selatan.
  * <p>
  * Player TIDAK membaca keyboard sendiri. Input diubah menjadi Command oleh
  * InputHandler, lalu Command memanggil {@link #move(float, float)} /
@@ -189,7 +189,7 @@ public class Player extends Entity {
     }
 
     /**
-     * Kotak kecil tepat di depan Iwan sesuai arah hadap. Interactable yang
+     * Kotak kecil tepat di depan zentra sesuai arah hadap. Interactable yang
      * bersinggungan dengan kotak ini bisa diajak bicara / diperiksa.
      */
     public Rectangle getInteractionProbe() {

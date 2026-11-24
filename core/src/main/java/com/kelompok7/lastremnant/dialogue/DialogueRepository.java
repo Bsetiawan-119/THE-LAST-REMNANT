@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * { "dialogues": [
  *   { "id": "sari_intro", "start": "a", "nodes": [
  *     { "id": "a", "speaker": "sari", "text": "...", "next": "b", "actions": ["flag:met_sari"] },
- *     { "id": "b", "speaker": "iwan", "text": "...", "choices": [
+ *     { "id": "b", "speaker": "zentra", "text": "...", "choices": [
  *         { "text": "...", "next": "c", "if": "!asked", "actions": ["flag:asked"] } ] }
  *   ]}
  * ]}

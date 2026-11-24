@@ -1,7 +1,7 @@
 // =============================================================================
 //  THE LAST REMNANT · Kelompok 7
 //  File    : ExplorationState.java
-//  Bagian  : UI & game flow (state: Iwan berjalan bebas di kota)
+//  Bagian  : UI & game flow (state: zentra berjalan bebas di kota)
 //  PJ      : Budiman Setiawan
 //  Minggu  : W2
 //  Pattern : STATE (concrete state)
@@ -13,7 +13,7 @@ import com.kelompok7.lastremnant.entity.Interactable;
 import com.kelompok7.lastremnant.screens.GameScreen;
 
 /**
- * Loop inti eksplorasi: input -> gerak -> cari benda/NPC di depan Iwan -> interaksi.
+ * Loop inti eksplorasi: input -> gerak -> cari benda/NPC di depan zentra -> interaksi.
  * Interaksi bersifat polimorfik: state ini tidak tahu apakah targetnya NPC atau benda.
  */
 public class ExplorationState implements GameState {
