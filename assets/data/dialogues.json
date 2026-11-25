@@ -169,7 +169,7 @@
       { "id": "h", "speaker": "zentra_mask", "text": "Pakai dengan benar. Aku tidak sempat. Oh, satu lagi. Kalau kamu bertemu Kruk... ...bilang aku minta maaf.", "next": "i" },
       { "id": "i", "speaker": "narrator", "text": "Pria itu mengangkat tangan ke topengnya seolah hendak membukanya, lalu mengurungkannya. Layar mati.", "next": "j" },
       { "id": "j", "speaker": "narrator", "text": "Zentra memeriksa radio tua di ruangan ini dan menemukan Amulet 1: Kenang, liontin perunggu berbentuk daun.", "next": "k",
-        "actions": ["flag:amulet_kenang", "sfx:confirm", "toast:Amulet 1: Kenang diperoleh!"] },
+        "actions": ["amulet:kenang"] },
       { "id": "k", "speaker": "zentra", "text": "Kruk. Siapa itu?", "next": "l" },
       { "id": "l", "speaker": "narrator", "text": "Layar The Remnant berkedip sekali, menampilkan huruf K. Dari luar terdengar puing bergeser membuka jalan.",
         "actions": ["note:tv_rekaman", "objective:Pergi ke Perpustakaan Arsip Kota lewat gang di selatan."] }

@@ -33,6 +33,8 @@ import com.kelompok7.lastremnant.LastRemnantGame;
 import com.kelompok7.lastremnant.assets.GameAssets;
 import com.kelompok7.lastremnant.combat.Attack;
 import com.kelompok7.lastremnant.combat.Damageable;
+import com.kelompok7.lastremnant.combat.Enemy;
+import com.kelompok7.lastremnant.combat.Health;
 import com.kelompok7.lastremnant.combat.Inventory;
 import com.kelompok7.lastremnant.combat.InventoryListener;
 import com.kelompok7.lastremnant.combat.PickupResult;
@@ -55,6 +57,7 @@ import com.kelompok7.lastremnant.entity.MemoryObject;
 import com.kelompok7.lastremnant.entity.NPC;
 import com.kelompok7.lastremnant.entity.Player;
 import com.kelompok7.lastremnant.input.InputHandler;
+import com.kelompok7.lastremnant.memory.Amulet;
 import com.kelompok7.lastremnant.memory.Journal;
 import com.kelompok7.lastremnant.memory.JournalEntry;
 import com.kelompok7.lastremnant.memory.MemoryDatabase;
@@ -89,7 +92,7 @@ import com.kelompok7.lastremnant.world.World;
  * GameScreen sendiri tidak berisi logika "sedang apa pemain"; itu tugas state aktif.
  */
 public class GameScreen extends ScreenAdapter implements InteractionContext, DialogueActionHandler,
-        WeaponSystemListener, InventoryListener {
+        WeaponSystemListener, InventoryListener, Health.Listener {
 
     /** Ganti peta awal tanpa ubah kode: ./gradlew lwjgl3:run "-Pmap=maps/kota_kepompong.tmx"  [W3 Iqbal] */
     public static final String MAP_PROPERTY = "lastremnant.map";
@@ -114,8 +117,8 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     private final CharacterDatabase characters;
     private final DialogueRepository dialogues;
     private final MemoryDatabase memories;
-    private final Journal journal = new Journal();
-    private final MemoryDevice device = new MemoryDevice(journal);
+    private final Journal journal;
+    private final MemoryDevice device;
     private final String mapPath;                                   // [W3 Iqbal]
     private final WeaponSystem weapons;                             // [W3 Iqbal]
     private boolean combatHintShown;
@@ -143,6 +146,12 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     /** [W3 Iqbal] Dipakai alur BANGUN (Setiawan) untuk masuk ke Stage 1: Constants.STAGE1_MAP. */
     public GameScreen(LastRemnantGame game, String mapPath) {
+        this(game, mapPath, new Journal());
+    }
+
+    private GameScreen(LastRemnantGame game, String mapPath, Journal journal) {
+        this.journal = journal;
+        this.device = new MemoryDevice(journal);
         this.game = game;
         this.mapPath = mapPath;
         this.assets = game.getAssets();
@@ -186,6 +195,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         // Setiawan: HUD darah/peluru/senjata cukup implements InventoryListener juga.
         weapons.addListener(this);
         player.getInventory().addListener(this);
+        player.getHealth().addListener(this);
     }
 
     /** Buat NPC & benda memori dari layer "entities" di peta. */
@@ -210,6 +220,14 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
                     break;
                 }
                 // ---------------------------------------------------- [W3 Iqbal]
+                case "enemy": {
+                    if ("boneka".equals(s.prop("enemyId"))) {
+                        Enemy enemy = new Enemy(s.x, s.y, player, collision, assets.characterSprites("boneka"));
+                        entities.add(enemy);
+                        weapons.addTarget(enemy);
+                    }
+                    break;
+                }
                 case "dummy": {
                     TargetDummy d = new TargetDummy(s.x, s.y, parseInt(s.prop("hp"), 3),
                             assets.region("dummy"), assets.region("dummy_broken"));
@@ -227,7 +245,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
                 case "barrier": {
                     String closed = s.prop("sprite");
                     String opened = s.prop("openSprite");
-                    Barrier b = new Barrier(s.bounds(new Rectangle()), story, s.prop("openFlag"),
+                    Barrier b = new Barrier(s.bounds(new Rectangle()), this::canOpenBarrier, s.prop("openFlag"),
                             closed != null ? assets.region(closed) : null,
                             opened != null ? assets.region(opened) : null);
                     b.setOnOpened(() -> {
@@ -245,9 +263,14 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
                     break;
                 }
                 default:
-                    break;   // "player"/"weapon" sudah ditangani; enemy/hiding/checkpoint/exit = penanda modul lain
+                    break;   // "player"/"weapon" sudah ditangani; hiding/checkpoint/exit = penanda modul lain
             }
         }
+    }
+
+    private boolean canOpenBarrier(String flag) {
+        if ("tv_watched".equals(flag) && !device.hasAmulet(Amulet.KENANG)) return false;
+        return story.hasFlag(flag);
     }
 
     // ================================================================== Screen
@@ -342,6 +365,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         journal.removeListener(hud);
         weapons.removeListener(this);                       // [W3 Iqbal]
         player.getInventory().removeListener(this);
+        player.getHealth().removeListener(this);
         world.dispose();
         uiStage.dispose();
     }
@@ -350,7 +374,9 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
 
     /** Update semua entity (polimorfik) + kamera. */
     public void updateWorld(float delta) {
+        if (leaving) return;
         for (Entity e : entities) {
+            if (e instanceof Enemy && !inputHandler.isEnabled()) continue;
             e.update(delta);
         }
         weapons.update(delta, player);   // [W3 Iqbal] ambil/buang senjata, serangan, peluru
@@ -469,7 +495,7 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         curtain.clearActions();
         curtain.addAction(Actions.sequence(
                 Actions.fadeIn(0.8f),
-                Actions.run(() -> game.changeScreen(new GameScreen(game, Constants.STAGE1_MAP)))
+                Actions.run(() -> game.changeScreen(new GameScreen(game, Constants.STAGE1_MAP, journal)))
         ));
     }
 
@@ -478,6 +504,10 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         assets.play("scan", 0.8f, 1f);
         // [W2 sementara] progres pindai ditulis langsung di sini.
         // W3: dipindah ke QuestManager (Insan) yang mengumumkan perubahan lewat Observer.
+        if (Constants.STAGE1_MAP.equals(mapPath) && "radio".equals(echo.getId())) {
+            story.setObjective("Masuk ke ruang rahasia dan nyalakan TV.");
+            return;
+        }
         int done = device.getScannedCount();
         int total = memories.echoCount();
         if (done < total) {
@@ -503,6 +533,12 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
     }
 
     // ================================================================== combat [W3 Iqbal]
+
+    @Override
+    public void onHealthChanged(Health health) {
+        hud.showToast("HP Zentra " + health.getCurrent() + "/" + health.getMaximum());
+        if (!health.isAlive()) returnToMenu();
+    }
 
     @Override
     public void onAttack(Attack attack) {
@@ -574,6 +610,14 @@ public class GameScreen extends ScreenAdapter implements InteractionContext, Dia
         switch (action.getType()) {
             case "flag":
                 story.setFlag(v);
+                break;
+            case "amulet":
+                Amulet amulet = Amulet.fromId(v);
+                if (device.collectAmulet(amulet)) {
+                    assets.play("confirm");
+                    hud.showToast(amulet.fragment().getTitle() + " diperoleh!");
+                }
+                if (device.hasAmulet(amulet)) story.setFlag("amulet_" + v);
                 break;
             case "unflag":
                 story.clearFlag(v);

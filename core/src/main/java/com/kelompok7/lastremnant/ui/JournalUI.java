@@ -188,7 +188,7 @@ public class JournalUI {
         for (int i = 0; i < device.getCapacity(); i++) {
             slotRow.add(new Image(i < device.getFragmentCount() ? st.slotFull : st.slotEmpty)).size(12).padRight(3);
         }
-        slotRow.add(new Label("Fragmen " + device.getFragmentCount() + "/" + device.getCapacity(), st.dim)).padLeft(5);
+        slotRow.add(new Label("Amulet " + device.getFragmentCount() + "/" + device.getCapacity(), st.dim)).padLeft(5);
     }
 
     private void select(int index) {

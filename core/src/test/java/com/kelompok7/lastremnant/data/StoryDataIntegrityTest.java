@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.kelompok7.lastremnant.dialogue.DialogueRepository;
 import com.kelompok7.lastremnant.memory.MemoryDatabase;
+import com.kelompok7.lastremnant.memory.Amulet;
 import com.kelompok7.lastremnant.story.CharacterDatabase;
 import com.kelompok7.lastremnant.story.CharacterInfo;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import org.junit.Test;
 public class StoryDataIntegrityTest {
 
     private static final Set<String> KNOWN_ACTIONS =
-            new HashSet<>(Arrays.asList("flag", "unflag", "objective", "device", "note", "sfx", "toast"));
+            new HashSet<>(Arrays.asList("flag", "unflag", "objective", "device", "note", "sfx", "toast", "amulet"));
     private static final Set<String> KNOWN_SFX =
             new HashSet<>(Arrays.asList("blip", "select", "confirm", "scan", "journal"));
 
@@ -126,6 +127,9 @@ public class StoryDataIntegrityTest {
             String value = sep < 0 ? "" : raw.substring(sep + 1);
             if (!KNOWN_ACTIONS.contains(type)) problems.add(where + ": aksi tidak dikenal '" + raw + "'");
             if (type.equals("sfx") && !KNOWN_SFX.contains(value)) problems.add(where + ": sfx '" + value + "' tidak ada");
+            if (type.equals("amulet")) {
+                Amulet.fromId(value);
+            }
             if (type.equals("note")) {
                 try {
                     mem.createNote(value);

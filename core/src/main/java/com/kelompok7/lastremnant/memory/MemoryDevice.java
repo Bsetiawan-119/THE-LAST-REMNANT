@@ -88,6 +88,17 @@ public class MemoryDevice {
         return true;
     }
 
+    public boolean collectAmulet(Amulet amulet) {
+        return addFragment(amulet.fragment());
+    }
+
+    public boolean hasAmulet(Amulet amulet) {
+        for (MemoryFragment fragment : fragments) {
+            if (fragment.getId().equals(amulet.fragment().getId())) return true;
+        }
+        return false;
+    }
+
     public int getFragmentCount() {
         return fragments.size;
     }

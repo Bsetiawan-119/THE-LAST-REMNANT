@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kelompok7.lastremnant.combat.Attack;
 import com.kelompok7.lastremnant.combat.Inventory;
+import com.kelompok7.lastremnant.combat.Health;
 import com.kelompok7.lastremnant.util.Constants;
 import com.kelompok7.lastremnant.world.CollisionSystem;
 
@@ -42,6 +43,7 @@ public class Player extends Entity {
     private float stateTime;
 
     // --- senjata (W3) ---
+    private final Health health = new Health(6);
     private final Inventory inventory = new Inventory();
     private final Array<Attack> pendingAttacks = new Array<>();
     private boolean attackRequested;
@@ -210,6 +212,8 @@ public class Player extends Entity {
         }
         return probe;
     }
+
+    public Health getHealth() { return health; }
 
     public Inventory getInventory() {
         return inventory;

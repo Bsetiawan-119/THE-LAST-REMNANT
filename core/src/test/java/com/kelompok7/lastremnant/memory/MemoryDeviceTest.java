@@ -76,4 +76,19 @@ public class MemoryDeviceTest {
     public void kapasitasHarusPositif() {
         new MemoryDevice(journal, 0);
     }
+
+    @Test
+    public void kenangMengisiSatuSlotTerpisahDariGemaRadio() {
+        assertFalse(device.collectAmulet(Amulet.KENANG));
+        device.activate();
+        device.scan(radio);
+        assertEquals(0, device.getFragmentCount());
+        assertTrue(device.collectAmulet(Amulet.KENANG));
+        assertTrue(device.hasAmulet(Amulet.KENANG));
+        assertFalse(device.hasAmulet(Amulet.SESAL));
+        assertFalse(device.collectAmulet(Amulet.KENANG));
+        assertEquals(1, device.getFragmentCount());
+        assertEquals(2, journal.size());
+        assertTrue(journal.contains("fragment_kenang"));
+    }
 }

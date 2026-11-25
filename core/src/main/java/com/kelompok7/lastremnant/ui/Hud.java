@@ -164,7 +164,7 @@ public class Hud implements StoryListener, JournalListener {
             for (int i = 0; i < slots.length; i++) {
                 slots[i].setDrawable(i < frags ? st.slotFull : st.slotEmpty);
             }
-            fragmentLabel.setText("Fragmen " + frags + "/" + device.getCapacity());
+            fragmentLabel.setText("Amulet " + frags + "/" + device.getCapacity());
         }
         int unread = journal.getUnreadCount();
         if (unread != lastUnread) {
